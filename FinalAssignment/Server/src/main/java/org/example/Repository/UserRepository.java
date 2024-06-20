@@ -2,6 +2,7 @@ package org.example.Repository;
 
 import org.example.Config.DataSourceConfig;
 import org.example.Config.MySqlDataSourceConfig;
+import org.example.Entity.FoodItem;
 import org.example.Entity.User;
 import org.example.Exception.NotFoundException;
 import org.example.Mapper.UserRowMapper;
@@ -11,7 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.util.Optional;
 
-public class UserRepository implements GenericRepository<User, Long> {
+public class UserRepository implements GenericRepository<User, Integer> {
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -21,7 +22,6 @@ public class UserRepository implements GenericRepository<User, Long> {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    @Override
     public Optional<User> findByName(String userName) {
         String sql = "SELECT u.*, r.id as role_id, r.name as role_name " +
                 "FROM user u " +
@@ -39,7 +39,16 @@ public class UserRepository implements GenericRepository<User, Long> {
     }
 
     @Override
-    public User findById(Long id) {
+    public User getById(Integer id) {
         return null;
     }
+
+    @Override
+    public User update(Integer id, User resource) {
+        return null;
+    }
+
+    @Override
+    public void delete(Integer id) {}
+
 }

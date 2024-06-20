@@ -1,16 +1,16 @@
 package org.example.Entity;
 
 public class FoodItem {
-    private Long id;
+    private int id;
     private String name;
     private FoodItemType type;
     private boolean availabilityStatus;
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

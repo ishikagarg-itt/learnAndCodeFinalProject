@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class SentimentAnalysis {
 
-    public static List<CommentSentiment> analyzeSentiments(List<String> comments) {
+    public static double analyzeSentiments(List<String> comments) {
         List<CommentSentiment> sentimentList = new ArrayList<>();
 
         // Set up Stanford CoreNLP pipeline
@@ -19,38 +19,34 @@ public class SentimentAnalysis {
         props.setProperty("annotators", "tokenize,ssplit,parse,sentiment");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
+        int totalSentimentScore = 0;
+        int count = 0;
+
         for (String comment : comments) {
             Annotation annotation = pipeline.process(comment);
-            int sentimentScore = 0;
-            int count = 0;
 
             for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
                 String sentiment = sentence.get(SentimentCoreAnnotations.SentimentClass.class);
-                sentimentScore += convertSentimentToScore(sentiment);
+                totalSentimentScore += convertSentimentToScore(sentiment);
                 count++;
             }
-
-            sentimentList.add(new CommentSentiment(comment, sentimentScore / count));
         }
 
-        // Sort the list by sentiment score
-        return sentimentList.stream()
-                .sorted(Comparator.comparingInt(CommentSentiment::getSentiment))
-                .collect(Collectors.toList());
+        return  count > 0 ? totalSentimentScore / count : 0.0;
     }
 
     private static int convertSentimentToScore(String sentiment) {
         switch (sentiment.toLowerCase()) {
             case "very positive":
-                return 2;
+                return 5;
             case "positive":
-                return 1;
+                return 4;
             case "neutral":
-                return 0;
+                return 3;
             case "negative":
-                return -1;
+                return 2;
             case "very negative":
-                return -2;
+                return 1;
             default:
                 return 0;
         }

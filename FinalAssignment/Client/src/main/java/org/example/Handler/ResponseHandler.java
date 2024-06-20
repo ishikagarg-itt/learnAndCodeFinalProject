@@ -10,7 +10,8 @@ public class ResponseHandler {
     public static String readResponse(BufferedReader in) throws IOException {
         String header = in.readLine();
         String[] headerParts = header.split("\\|");
-        if(headerParts[0] == "SUCCESS"){
+        System.out.println(headerParts[0]);
+        if(headerParts[0].equals("SUCCESS")){
             int payloadLength = Integer.parseInt(headerParts[1]);
             char[] payloadBuffer = new char[payloadLength];
             in.read(payloadBuffer, 0, payloadLength);

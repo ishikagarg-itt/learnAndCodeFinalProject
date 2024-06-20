@@ -2,31 +2,29 @@ package org.example.Handler;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.example.Controller.ChefController;
 import org.example.Dto.CommentSentiment;
+import org.example.utils.AuthenticationUtils;
 import org.example.utils.SentimentAnalysis;
 
 import java.io.PrintWriter;
 import java.util.List;
 
-public class CommentHandler implements MessageHandler {
-    private String[] headerParts;
-    private String payload;
+public class RecommendationHandler{
 
-    public CommentHandler(String[] headerParts, String payload) {
-        this.headerParts = headerParts;
-        this.payload = payload;
+    private final ChefController chefController;
+    public RecommendationHandler() {
+        chefController = new ChefController();
     }
 
-    @Override
-    public void handle(PrintWriter out) {
+    public void handle(PrintWriter out, String[] headerParts, String payload) {
         Gson gson = new Gson();
-        String sessionToken = headerParts[2];
-       // if (Server.isValidSessionToken(sessionToken)) {
-            List<String> comments = gson.fromJson(payload, new TypeToken<List<String>>() {}.getType());
+        //String sessionToken = headerParts[2];
+        //if (AuthenticationUtils.isValidSessionToken(sessionToken)) {
+            //List<String> comments = gson.fromJson(payload, new TypeToken<List<String>>() {}.getType());
+            String message = chefController.getRecommendation();
 
-            List<CommentSentiment> sentiments = SentimentAnalysis.analyzeSentiments(comments);
-
-            String responsePayload = gson.toJson(sentiments);
+            String responsePayload = gson.toJson(message);
             String responseHeader = "RESPONSE|" + responsePayload.length();
             out.println(responseHeader);
             out.println(responsePayload);
