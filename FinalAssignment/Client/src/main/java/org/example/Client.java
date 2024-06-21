@@ -26,12 +26,12 @@ public class Client {
             Scanner scanner = new Scanner(System.in);
 
             while (true) {
-                MenuHandlerFactory.showInitialMenu();
-                int choice = getUserChoice(scanner);
-                switch (choice) {
-                    case 1:
-                        String sessionToken = authenticationService.login(scanner, in, out);
-                        MenuHandler menuHandler = MenuHandlerFactory.createHandler(AuthenticationService.getRoleFromToken(sessionToken), sessionToken);
+//                MenuHandlerFactory.showInitialMenu();
+//                int choice = getUserChoice(scanner);
+//                switch (choice) {
+                    //case 1:
+                        //String sessionToken = authenticationService.login(scanner, in, out);
+                        MenuHandler menuHandler = MenuHandlerFactory.createHandler("Admin");
                         if(menuHandler != null){
                             menuHandler.showMenu(scanner, in, out);
                         }
@@ -39,13 +39,13 @@ public class Client {
                             System.out.println("Invalid role type");
                             break;
                         }
-                    case 2:
-                        System.out.println("Exiting...");
-                        return;
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
-
-                }
+//                    case 2:
+//                        System.out.println("Exiting...");
+//                        return;
+//                    default:
+//                        System.out.println("Invalid choice. Please try again.");
+//
+//                }
             }
 
             //socket.close();

@@ -10,6 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 public class FoodItemRepository implements GenericRepository<FoodItem, Integer> {
 
@@ -23,11 +24,11 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
 
     @Override
     public FoodItem save(FoodItem foodItem) {
-        String sql = "INSERT INTO food_item (name, availability, type_id) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO food_item (name, availability_status, type_id) VALUES (?, ?, ?)";
         int rowsAffected = jdbcTemplate.update(sql,
                 foodItem.getName(),
                 foodItem.isAvailabilityStatus(),
-                foodItem.getType());
+                foodItem.getType().getId());
 
         if (rowsAffected > 0) {
             return foodItem;
@@ -78,5 +79,17 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
         } catch (DataAccessException ex) {
             throw new RuntimeException("Database error occurred", ex);
         }
+    }
+
+    public List<FoodItem> getTopFoodItems(String foodType){
+        String sql = "SELECT fi.*, fit.name as type_name " +
+                "FROM item_audit ia " +
+                "JOIN food_item fi ON ia.food_item_id = fi.id " +
+                "JOIN food_item_type fit ON fi.type_id = fit.id " +
+                "WHERE fit.type = ? " +
+                "ORDER BY (ia.average_rating + fia.average_sentiment) / 2 DESC " +
+                "LIMIT 2";
+
+        return jdbcTemplate.query(sql, new Object[]{foodType}, new FoodItemMapper());
     }
 }

@@ -12,7 +12,7 @@ public class ChefService {
     public ChefService(){
         recommendationService = new RecommendationService();
     }
-    public String getRecommendation(){
+    public List<FoodItem> getRecommendation(){
         return recommendationService.getRecommendation();
     }
 }

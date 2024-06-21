@@ -8,6 +8,5 @@ public class RequestHandler {
         System.out.println("header:" + header);
         out.println(header);
         out.println(payload);
-        out.flush();
     }
 }

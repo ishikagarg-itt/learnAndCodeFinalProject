@@ -15,8 +15,8 @@ public class ChefController {
         chefService = new ChefService();
     }
 
-    public String getRecommendation() {
-        String foodItems = chefService.getRecommendation();
+    public List<FoodItem> getRecommendation() {
+        List<FoodItem> foodItems = chefService.getRecommendation();
         return foodItems;
     }
 }

@@ -105,7 +105,6 @@ public class ClientHandler extends Thread {
                 System.out.println("Payload: " + payload);
 
                 messageHandlerFactory.handleMessage(messageType, headerParts, payload, out);
-
             }
 
             clientSocket.close();

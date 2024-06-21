@@ -35,4 +35,28 @@ public class FoodItemService {
 
         return addedItem;
     }
+
+    public FoodItemDto update(BufferedReader in, PrintWriter out, Scanner scanner) throws IOException {
+        System.out.println("Enter food item Id:");
+        int id = scanner.nextInt();
+        System.out.print("Enter name: ");
+        String name = scanner.nextLine();
+        System.out.println("Enter Availability(true/false): ");
+        Boolean availability_status = scanner.nextBoolean();
+
+        FoodItemDto foodItem = new FoodItemDto();
+        foodItem.setName(name);
+        foodItem.setAvailability_status(availability_status);
+        foodItem.setId(id);
+
+        Gson gson = new Gson();
+        String addPayload = gson.toJson(foodItem);
+
+        RequestHandler.sendRequest(out, "UPDATE_ITEM", addPayload);
+
+        String itemResponsePayload = ResponseHandler.readResponse(in);
+        FoodItemDto addedItem = gson.fromJson(itemResponsePayload, FoodItemDto.class);
+
+        return addedItem;
+    }
 }

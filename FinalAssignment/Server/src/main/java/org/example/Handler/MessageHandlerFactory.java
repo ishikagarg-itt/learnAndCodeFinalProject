@@ -32,9 +32,7 @@ public class MessageHandlerFactory {
             case "DELETE_ITEM":
                 foodItemHandler.handleDelete(out, payload);
                 break;
-//            case "GET_ALL_ITEM":
-//                foodItemHandler.handleGetAll(out);
-            case "GET_RECOMMENDATION":
+            case "GET-RECOMMENDATION":
                 recommendationHandler.handle(out, headerParts, payload);
                 break;
             case "EXIT":

@@ -1,14 +1,14 @@
 package org.example.Handler;
 
 public class MenuHandlerFactory {
-    public static MenuHandler createHandler(String roleType, String sessionToken) {
+    public static MenuHandler createHandler(String roleType) {
         switch (roleType) {
             case "Admin":
-                return new AdminMenuHandler(sessionToken);
+                return new AdminMenuHandler();
             case "Chef":
-                return new ChefMenuHandler(sessionToken);
+                return new ChefMenuHandler();
             case "Employee":
-                return new EmployeeMenuHandler(sessionToken);
+                return new EmployeeMenuHandler();
             default:
                 return null;
         }

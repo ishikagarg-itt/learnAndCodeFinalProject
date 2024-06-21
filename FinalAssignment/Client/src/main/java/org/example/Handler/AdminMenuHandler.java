@@ -12,24 +12,28 @@ import java.util.Scanner;
 
 public class AdminMenuHandler implements MenuHandler {
     private final FoodItemService foodItemService;
-    private final String sessionToken;
-    public AdminMenuHandler(String sessionToken){
+    //private final String sessionToken;
+    public AdminMenuHandler(){
         foodItemService = new FoodItemService();
-        this.sessionToken = sessionToken;
+        //this.sessionToken = sessionToken;
     }
     @Override
     public void showMenu(Scanner scanner, BufferedReader in, PrintWriter out) throws IOException {
-        System.out.println("1. Add Food Item");
-        System.out.println("2. Update Food Item");
-        System.out.println("3. Delete Food Item");
-        System.out.println("4. Get Food Item");
-        System.out.println("5. Get All Food Item");
-        System.out.print("Choose an option: ");
-        int choice = scanner.nextInt();
         while(true){
+            System.out.println("1. Add Food Item");
+            System.out.println("2. Update Food Item");
+            System.out.println("3. Delete Food Item");
+            System.out.println("4. Get Food Item");
+            System.out.println("5. Get All Food Item");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
             switch (choice){
                 case 1:
                     FoodItemDto addedFoodItem = foodItemService.add(in, out, scanner);
+                    addedFoodItem.toString();
+                    break;
                 case 2:
                     System.out.println("Exiting from Admin Menu...");
                     return;

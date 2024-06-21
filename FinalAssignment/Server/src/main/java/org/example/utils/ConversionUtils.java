@@ -18,4 +18,12 @@ public class ConversionUtils {
         itemToBeAdded.setName(foodItem.getName());
         return itemToBeAdded;
     }
+
+    public static FoodItemDto convertFoodItemToFoodItemDto(FoodItem addedFoodItem) {
+        FoodItemDto addedFoodItemDto = new FoodItemDto();
+        addedFoodItemDto.setName(addedFoodItem.getName());
+        addedFoodItemDto.setType(addedFoodItem.getType().getType());
+        addedFoodItemDto.setAvailabilityStatus(addedFoodItem.isAvailabilityStatus());
+        return addedFoodItemDto;
+    }
 }

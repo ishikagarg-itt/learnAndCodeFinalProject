@@ -32,12 +32,14 @@ public class RatingRepository {
     }
 
     public void updateItemAudit(FoodItemRating foodItemRating, double averageSentiment){
-        String sql = "UPDATE item_audit SET average_rating = ?, average_sentiment = ? WHERE food_item_id = ?";
+        String sql = "UPDATE item_audit SET average_rating = ?, average_sentiment = ?" + "WHERE food_item_id = ?";
         try {
             int rowsAffected = jdbcTemplate.update(sql,
                     foodItemRating.getAverageRating(),
                     averageSentiment,
                     foodItemRating.getFoodItemId());
+
+            System.out.println("rows affected:" + rowsAffected);
 
             if (rowsAffected == 0) {
                 throw new NotFoundException("FoodItem not found");

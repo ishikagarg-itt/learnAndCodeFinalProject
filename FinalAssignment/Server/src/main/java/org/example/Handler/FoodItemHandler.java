@@ -23,7 +23,8 @@ public class FoodItemHandler{
         FoodItemDto foodItem = gson.fromJson(payload, FoodItemDto.class);
         FoodItem itemToBeAdded = ConversionUtils.convertFoodItemDtoToFoodItem(foodItem);
         FoodItem addedFoodItem = foodItemController.add(itemToBeAdded);
-        String responsePayload = gson.toJson(addedFoodItem);
+        FoodItemDto addedFoodItemDto = ConversionUtils.convertFoodItemToFoodItemDto(addedFoodItem);
+        String responsePayload = gson.toJson(addedFoodItemDto);
         String responseHeader = "SUCCESS|" + responsePayload.length();
         out.println(responseHeader);
         out.println(responsePayload);

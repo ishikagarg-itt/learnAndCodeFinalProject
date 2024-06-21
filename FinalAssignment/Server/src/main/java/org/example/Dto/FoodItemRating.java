@@ -28,4 +28,13 @@ public class FoodItemRating {
     public void setComments(String comments) {
         this.comments = comments;
     }
+
+    @Override
+    public String toString() {
+        return "FoodItemRating{" +
+                "foodItemId=" + foodItemId +
+                ", averageRating=" + averageRating +
+                ", comments='" + comments + '\'' +
+                '}';
+    }
 }

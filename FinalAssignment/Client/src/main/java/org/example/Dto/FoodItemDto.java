@@ -1,6 +1,8 @@
 package org.example.Dto;
 
 public class FoodItemDto {
+
+    private int id;
     private String name;
     private String type;
     private boolean availability_status;
@@ -27,5 +29,22 @@ public class FoodItemDto {
 
     public void setAvailability_status(boolean availability_status) {
         this.availability_status = availability_status;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "FoodItemDto{" +
+                "name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", availability_status=" + availability_status +
+                '}';
     }
 }
