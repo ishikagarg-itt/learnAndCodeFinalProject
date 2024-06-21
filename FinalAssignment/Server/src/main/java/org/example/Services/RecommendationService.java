@@ -41,6 +41,8 @@ public class RecommendationService {
         allTopFoodItems.addAll(lunchItems);
         allTopFoodItems.addAll(dinnerItems);
 
+        System.out.println("allTopFoodItems" + allTopFoodItems.size());
+
         return allTopFoodItems;
     }
 }

@@ -18,7 +18,7 @@ public class Client {
     public static void main(String[] args) {
         new Client();
         try {
-            Socket socket = new Socket("localhost", 8000); // Connect to the server
+            Socket socket = new Socket("172.16.1.152", 5005); // Connect to the server
             System.out.println("Connected to server.");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

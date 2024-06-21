@@ -1,6 +1,7 @@
 package org.example.Handler;
 
 import org.example.Dto.FoodItemDto;
+import org.example.Dto.FoodItemResponseDto;
 import org.example.Services.FoodItemService;
 import org.example.Services.RecommendationService;
 
@@ -25,6 +26,7 @@ public class AdminMenuHandler implements MenuHandler {
             System.out.println("3. Delete Food Item");
             System.out.println("4. Get Food Item");
             System.out.println("5. Get All Food Item");
+            System.out.println("6. Exit");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -35,6 +37,14 @@ public class AdminMenuHandler implements MenuHandler {
                     addedFoodItem.toString();
                     break;
                 case 2:
+                    FoodItemDto updatedFoodItem = foodItemService.update(in, out, scanner);
+                    updatedFoodItem.toString();
+                    break;
+                case 4:
+                    FoodItemResponseDto foodItem = foodItemService.get(in, out, scanner);
+                    OutputHandler.printFoodItemResponse(foodItem);
+                    break;
+                case 6:
                     System.out.println("Exiting from Admin Menu...");
                     return;
             }

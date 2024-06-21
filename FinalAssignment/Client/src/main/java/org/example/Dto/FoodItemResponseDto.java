@@ -1,9 +1,18 @@
 package org.example.Dto;
 
 public class FoodItemResponseDto {
+    private int id;
     private String name;
-    private String type;
+    private FoodItemTypeDto type;
     private boolean availabilityStatus;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -13,11 +22,11 @@ public class FoodItemResponseDto {
         this.name = name;
     }
 
-    public String getType() {
+    public FoodItemTypeDto getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(FoodItemTypeDto type) {
         this.type = type;
     }
 

@@ -39,7 +39,7 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
 
     @Override
     public FoodItem getById(Integer id) {
-        String sql = "SELECT fi.*,t.name as type_name FROM food_item fi" + "LEFT JOIN food_item_type t ON fi.type_id = t.id" + "WHERE fi.id = ?";
+        String sql = "SELECT fi.*,t.type as type_name FROM food_item fi " + "LEFT JOIN food_item_type t ON fi.type_id = t.id " + "WHERE fi.id = ?";
         try {
             FoodItem foodItem = jdbcTemplate.queryForObject(sql, new Object[]{id}, new FoodItemMapper());
             return foodItem;
@@ -50,7 +50,7 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
 
     @Override
     public FoodItem update(Integer id, FoodItem foodItem) {
-        String sql = "UPDATE food_item SET Name = ?, IsAvailable = ? WHERE Id = ?";
+        String sql = "UPDATE food_item SET name = ?, availability_status = ? WHERE Id = ?";
         try {
             int rowsAffected = jdbcTemplate.update(sql,
                     foodItem.getName(),
@@ -82,13 +82,13 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
     }
 
     public List<FoodItem> getTopFoodItems(String foodType){
-        String sql = "SELECT fi.*, fit.name as type_name " +
+        String sql = "SELECT fi.*, fit.type as type_name " +
                 "FROM item_audit ia " +
                 "JOIN food_item fi ON ia.food_item_id = fi.id " +
                 "JOIN food_item_type fit ON fi.type_id = fit.id " +
                 "WHERE fit.type = ? " +
-                "ORDER BY (ia.average_rating + fia.average_sentiment) / 2 DESC " +
-                "LIMIT 2";
+                "ORDER BY (ia.average_rating + ia.average_sentiment) / 2 DESC " +
+                "LIMIT 5";
 
         return jdbcTemplate.query(sql, new Object[]{foodType}, new FoodItemMapper());
     }

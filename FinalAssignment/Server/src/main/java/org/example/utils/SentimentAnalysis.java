@@ -12,9 +12,6 @@ import java.util.stream.Collectors;
 public class SentimentAnalysis {
 
     public static double analyzeSentiments(List<String> comments) {
-        List<CommentSentiment> sentimentList = new ArrayList<>();
-
-        // Set up Stanford CoreNLP pipeline
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize,ssplit,parse,sentiment");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);

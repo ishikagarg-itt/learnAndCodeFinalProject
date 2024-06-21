@@ -2,6 +2,7 @@ package org.example.Services;
 
 import com.google.gson.Gson;
 import org.example.Dto.FoodItemDto;
+import org.example.Dto.FoodItemResponseDto;
 import org.example.Handler.RequestHandler;
 import org.example.Handler.ResponseHandler;
 
@@ -39,6 +40,7 @@ public class FoodItemService {
     public FoodItemDto update(BufferedReader in, PrintWriter out, Scanner scanner) throws IOException {
         System.out.println("Enter food item Id:");
         int id = scanner.nextInt();
+        scanner.nextLine();
         System.out.print("Enter name: ");
         String name = scanner.nextLine();
         System.out.println("Enter Availability(true/false): ");
@@ -58,5 +60,20 @@ public class FoodItemService {
         FoodItemDto addedItem = gson.fromJson(itemResponsePayload, FoodItemDto.class);
 
         return addedItem;
+    }
+
+    public FoodItemResponseDto get(BufferedReader in, PrintWriter out, Scanner scanner) throws IOException {
+        System.out.println("Enter food item Id:");
+        int id = scanner.nextInt();
+
+        Gson gson = new Gson();
+        String getPayload = gson.toJson(id);
+
+        RequestHandler.sendRequest(out, "GET_ITEM", getPayload);
+
+        String itemResponsePayload = ResponseHandler.readResponse(in);
+        FoodItemResponseDto foodItem = gson.fromJson(itemResponsePayload, FoodItemResponseDto.class);
+
+        return foodItem;
     }
 }
