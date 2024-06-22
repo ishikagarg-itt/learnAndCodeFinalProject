@@ -10,6 +10,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.util.Collections;
 import java.util.List;
 
 public class FoodItemRepository implements GenericRepository<FoodItem, Integer> {
@@ -69,13 +70,23 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
 
     @Override
     public void delete(Integer id) {
-        String sql = "DELETE FROM FoodItems WHERE Id = ?";
+        String sql = "DELETE FROM food_item WHERE id = ?";
         try {
             int rowsAffected = jdbcTemplate.update(sql, id);
 
             if (rowsAffected == 0) {
                 throw new NotFoundException("FoodItem not found");
             }
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("Database error occurred", ex);
+        }
+    }
+
+    public List<FoodItem> getAll() {
+        String sql = "SELECT fi.*,t.type as type_name FROM food_item fi " + "LEFT JOIN food_item_type t ON fi.type_id = t.id ";
+        try {
+            List<FoodItem> foodItems = jdbcTemplate.query(sql, new FoodItemMapper());
+            return foodItems;
         } catch (DataAccessException ex) {
             throw new RuntimeException("Database error occurred", ex);
         }

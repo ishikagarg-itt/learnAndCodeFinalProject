@@ -10,7 +10,7 @@ public class Server {
     public static void main(String[] args) {
         //ExecutorService executorService = Executors.newFixedThreadPool(10);
         try {
-            ServerSocket serverSocket = new ServerSocket();
+            ServerSocket serverSocket = new ServerSocket(8000);
             System.out.println("Server started. Listening on port 8000...");
 
             while (true) {

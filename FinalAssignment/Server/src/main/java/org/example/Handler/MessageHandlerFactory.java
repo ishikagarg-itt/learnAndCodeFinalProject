@@ -29,6 +29,9 @@ public class MessageHandlerFactory {
             case "GET_ITEM":
                 foodItemHandler.handleGet(out, payload);
                 break;
+            case "GET_ALL_ITEM":
+                foodItemHandler.handleGetAll(out);
+                break;
             case "DELETE_ITEM":
                 foodItemHandler.handleDelete(out, payload);
                 break;

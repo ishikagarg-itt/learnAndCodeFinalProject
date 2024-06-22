@@ -34,7 +34,6 @@ public class ChefMenuHandler implements MenuHandler{
                     foodItems.stream().forEach(foodItemResponseDto -> foodItemResponseDto.toString());
                     break;
                 case 2:
-
                 case 3:
                     System.out.println("Exiting from Chef Menu...");
                     return;

@@ -37,12 +37,22 @@ public class AdminMenuHandler implements MenuHandler {
                     addedFoodItem.toString();
                     break;
                 case 2:
-                    FoodItemDto updatedFoodItem = foodItemService.update(in, out, scanner);
-                    updatedFoodItem.toString();
+                    String updateSuccessMessage = foodItemService.update(in, out, scanner);
+                    System.out.println(updateSuccessMessage);
+                    break;
+                case 3:
+                    String deleteSuccessMessage = foodItemService.delete(in, out, scanner);
+                    System.out.println(deleteSuccessMessage);
                     break;
                 case 4:
                     FoodItemResponseDto foodItem = foodItemService.get(in, out, scanner);
                     OutputHandler.printFoodItemResponse(foodItem);
+                    break;
+                case 5:
+                    List<FoodItemResponseDto> getAllResponse = foodItemService.getAll(in, out);
+                    for (FoodItemResponseDto item : getAllResponse) {
+                        OutputHandler.printFoodItemResponse(item);
+                    }
                     break;
                 case 6:
                     System.out.println("Exiting from Admin Menu...");

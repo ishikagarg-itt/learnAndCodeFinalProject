@@ -3,6 +3,8 @@ package org.example.Controller;
 import org.example.Entity.FoodItem;
 import org.example.Services.FoodItemService;
 
+import java.util.List;
+
 public class FoodItemController {
 
     private final FoodItemService foodItemService;
@@ -13,6 +15,10 @@ public class FoodItemController {
 
     public FoodItem get(int id){
         return foodItemService.get(id);
+    }
+
+    public List<FoodItem> getAll(){
+        return foodItemService.getAll();
     }
 
     public FoodItem add(FoodItem foodItem){

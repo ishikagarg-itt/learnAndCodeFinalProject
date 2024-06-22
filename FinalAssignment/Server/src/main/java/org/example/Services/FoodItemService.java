@@ -3,6 +3,8 @@ package org.example.Services;
 import org.example.Entity.FoodItem;
 import org.example.Repository.FoodItemRepository;
 
+import java.util.List;
+
 public class FoodItemService {
 
     private final FoodItemRepository foodItemRepository;
@@ -17,6 +19,10 @@ public class FoodItemService {
 
     public FoodItem get(int id){
         return foodItemRepository.getById(id);
+    }
+
+    public List<FoodItem> getAll(){
+        return foodItemRepository.getAll();
     }
 
     public void delete(int id){

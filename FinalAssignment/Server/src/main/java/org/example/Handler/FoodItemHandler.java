@@ -9,6 +9,7 @@ import org.example.Entity.FoodItem;
 import org.example.utils.ConversionUtils;
 
 import java.io.PrintWriter;
+import java.util.List;
 
 public class FoodItemHandler{
     private final FoodItemController foodItemController;
@@ -42,27 +43,28 @@ public class FoodItemHandler{
     public void handleUpdate(PrintWriter out, String payload) {
         FoodItem foodItem = gson.fromJson(payload, FoodItem.class);
         foodItemController.update(foodItem.getId(), foodItem);
-        String responsePayload = "";
+        String responsePayload = "Item updated successfully";
         String responseHeader = "SUCCESS|" + responsePayload.length();
         out.println(responseHeader);
-        out.println("Item updated successfully");
+        out.println(responsePayload);
     }
 
-//    public void handleGetAll(PrintWriter out) {
-//        LoginResponseDto loginResponse = foodItemController
-//                String responsePayload = gson.toJson(loginResponse);
-//        String responseHeader = "SUCCESS|" + responsePayload.length();
-//        out.println(responseHeader);
-//        out.println(responsePayload);
-//        System.out.println("Server sent session token to client");
-//    }
+    public void handleGetAll(PrintWriter out) {
+        List<FoodItem> foodItems = foodItemController.getAll();
+        String responsePayload = gson.toJson(foodItems);
+        String responseHeader = "SUCCESS|" + responsePayload.length();
+        System.out.println(responsePayload);
+        out.println(responseHeader);
+        out.println(responsePayload);
+        System.out.println("Server sent session token to client");
+    }
 
     public void handleDelete(PrintWriter out, String payload) {
         int id = gson.fromJson(payload, Integer.class);
         foodItemController.delete(id);
-        String responsePayload = "";
+        String responsePayload = "Item deleted successfully";
         String responseHeader = "SUCCESS|" + responsePayload.length();
         out.println(responseHeader);
-        out.println("Item deleted successfully");
+        out.println(responsePayload);
     }
 }
