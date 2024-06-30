@@ -33,7 +33,9 @@ public class ChefMenuHandler implements MenuHandler{
             scanner.nextLine();
             switch (choice){
                 case 1:
+                    System.out.println("choice:" + choice);
                     List<FoodItemResponseDto> foodItems = recommendationService.getRecommendation(in, out);
+                    System.out.println("recommendation completed");
                     foodItems.stream().forEach(foodItemResponseDto -> foodItemResponseDto.toString());
                     break;
                 case 2:
@@ -43,6 +45,9 @@ public class ChefMenuHandler implements MenuHandler{
                 case 3:
                     System.out.println("Exiting from Chef Menu...");
                     return;
+                default:
+                    System.out.println("You entered a wrong option, please try again");
+                    break;
             }
         }
     }

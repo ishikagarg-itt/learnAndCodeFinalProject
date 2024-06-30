@@ -21,6 +21,7 @@ public class RecommendationHandler {
         List<FoodItem> foodItems = chefController.getRecommendation();
 
         String responsePayload = gson.toJson(foodItems);
+        System.out.println("response payload" + responsePayload);
         String responseHeader = "SUCCESS|" + responsePayload.length();
         out.println(responseHeader);
         out.println(responsePayload);

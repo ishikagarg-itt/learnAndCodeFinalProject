@@ -1,11 +1,9 @@
 package org.example.Services;
 
 import com.google.gson.Gson;
-import org.example.Dto.FoodItemDto;
 import org.example.Handler.RequestHandler;
 import org.example.Handler.ResponseHandler;
 
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -31,7 +29,7 @@ public class ChefService {
             String addPayload = gson.toJson(foodItemIds);
 
             RequestHandler.sendRequest(out, "ROLL_OUT_MENU", addPayload);
-            String rollOutResponse = ResponseHandler.readResponse(in, String.class);
+            String rollOutResponse = ResponseHandler.readResponseObject(in, String.class);
             return rollOutResponse;
         }catch(InputMismatchException exception){
             throw new InputMismatchException("You have entered wrong input");

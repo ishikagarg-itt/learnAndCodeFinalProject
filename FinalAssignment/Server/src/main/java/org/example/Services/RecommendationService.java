@@ -1,6 +1,5 @@
 package org.example.Services;
 
-import org.example.Dto.CommentSentiment;
 import org.example.Dto.FoodItemRating;
 import org.example.Entity.FoodItem;
 import org.example.Repository.FoodItemRepository;

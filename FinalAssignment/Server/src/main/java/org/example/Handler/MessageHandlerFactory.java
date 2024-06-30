@@ -7,12 +7,14 @@ public class MessageHandlerFactory {
     private final RecommendationHandler recommendationHandler;
     private final FoodItemHandler foodItemHandler;
     private final ExitHandler exitHandler;
+    private final EmployeeHandler employeeHandler;
 
     public MessageHandlerFactory(){
         loginHandler = new LoginHandler();
         recommendationHandler = new RecommendationHandler();
         foodItemHandler = new FoodItemHandler();
         exitHandler = new ExitHandler();
+        employeeHandler = new EmployeeHandler();
     }
 
     public void handleMessage(String messageType, String[] headerParts, String payload, PrintWriter out) {
@@ -40,6 +42,12 @@ public class MessageHandlerFactory {
                 break;
             case "ROLL_OUT_MENU":
                 recommendationHandler.handleRollOutMenu(out, headerParts, payload);
+                break;
+            case "GET_ROLL_OUT_MENU":
+                employeeHandler.handleGetRollOutMenu(out, headerParts);
+                break;
+            case "CHOOSE_ITEMS":
+                employeeHandler.handleChooseItems(out, headerParts, payload);
                 break;
             case "GIVE_RATING":
                 //recommendationHandler.handleRollOutMenu(out, headerParts, payload);

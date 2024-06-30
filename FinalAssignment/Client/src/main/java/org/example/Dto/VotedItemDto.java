@@ -1,11 +1,11 @@
-package org.example.Entity;
+package org.example.Dto;
 
 import java.util.Date;
 
-public class VotedItem {
+public class VotedItemDto {
     private int id;
-    private FoodItem foodItem;
-    private Date votingDate;
+    private FoodItemResponseDto foodItem;
+    private Date voting_date;
     private int totalVotes;
 
     public int getId() {
@@ -16,20 +16,20 @@ public class VotedItem {
         this.id = id;
     }
 
-    public FoodItem getFoodItem() {
+    public FoodItemResponseDto getFoodItem() {
         return foodItem;
     }
 
-    public void setFoodItem(FoodItem foodItem) {
+    public void setFoodItem(FoodItemResponseDto foodItem) {
         this.foodItem = foodItem;
     }
 
-    public Date getVotingDate() {
-        return votingDate;
+    public Date getVoting_date() {
+        return voting_date;
     }
 
-    public void setVotingDate(Date votingDate) {
-        this.votingDate = votingDate;
+    public void setVoting_date(Date voting_date) {
+        this.voting_date = voting_date;
     }
 
     public int getTotalVotes() {

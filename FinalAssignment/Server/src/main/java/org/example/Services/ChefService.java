@@ -1,14 +1,14 @@
 package org.example.Services;
 
-import org.example.Dto.CommentSentiment;
 import org.example.Entity.FoodItem;
 import org.example.Entity.Notification;
 import org.example.Entity.VotedItem;
 import org.example.Exception.NotFoundException;
 import org.example.Repository.FoodItemRepository;
 import org.example.Repository.VotedItemRepository;
-import org.example.utils.SentimentAnalysis;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ChefService {
@@ -49,6 +49,7 @@ public class ChefService {
     private VotedItem buildVotedItem(int foodItemId){
         VotedItem votedItem = new VotedItem();
         votedItem.setTotalVotes(0);
+        votedItem.setVotingDate(new Date(Calendar.getInstance().getTimeInMillis()));
         FoodItem foodItem = new FoodItem();
         foodItem.setId(foodItemId);
         votedItem.setFoodItem(foodItem);

@@ -4,10 +4,8 @@ import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
-import org.example.Dto.CommentSentiment;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SentimentAnalysis {
 

@@ -83,31 +83,25 @@ public class ClientHandler extends Thread {
     public void run() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
-
             String header;
-            while ((header = in.readLine()) != null) {
-                if (header.isEmpty()) {
-                    System.out.println("Received an empty header, closing connection.");
-                    break;
-                }
-
+            while (true) {
+                header = in.readLine();
                 System.out.println("Header: " + header);
+                if (header != null && !header.isEmpty()) {
+                    String[] headerParts = header.split("\\|");
 
-                String[] headerParts = header.split("\\|");
+                    String messageType = headerParts[0];
+                    System.out.println("headerParts" + headerParts[1]);
+                    int payloadLength = Integer.parseInt(headerParts[1]);
 
-                String messageType = headerParts[0];
-                System.out.println("headerParts" + headerParts[1]);
-                int payloadLength = Integer.parseInt(headerParts[1]);
+                    char[] payloadBuffer = new char[payloadLength];
+                    in.read(payloadBuffer, 0, payloadLength);
+                    String payload = new String(payloadBuffer);
+                    System.out.println("Payload: " + payload);
 
-                char[] payloadBuffer = new char[payloadLength];
-                in.read(payloadBuffer, 0, payloadLength);
-                String payload = new String(payloadBuffer);
-                System.out.println("Payload: " + payload);
-
-                messageHandlerFactory.handleMessage(messageType, headerParts, payload, out);
+                    messageHandlerFactory.handleMessage(messageType, headerParts, payload, out);
+                }
             }
-
-            clientSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

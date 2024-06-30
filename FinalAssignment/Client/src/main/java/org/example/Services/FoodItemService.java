@@ -1,10 +1,8 @@
 package org.example.Services;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.example.Dto.FoodItemDto;
 import org.example.Dto.FoodItemResponseDto;
-import org.example.Handler.OutputHandler;
 import org.example.Handler.RequestHandler;
 import org.example.Handler.ResponseHandler;
 
@@ -33,7 +31,7 @@ public class FoodItemService {
         String addPayload = gson.toJson(foodItem);
 
         RequestHandler.sendRequest(out, "ADD_ITEM", addPayload);
-        FoodItemDto addedItem = ResponseHandler.readResponse(in, FoodItemDto.class);
+        FoodItemDto addedItem = ResponseHandler.readResponseObject(in, FoodItemDto.class);
         return addedItem;
     }
 
@@ -55,7 +53,7 @@ public class FoodItemService {
         String updatePayload = gson.toJson(foodItem);
 
         RequestHandler.sendRequest(out, "UPDATE_ITEM", updatePayload);
-        String updateSuccessResponse = ResponseHandler.readResponse(in, String.class);
+        String updateSuccessResponse = ResponseHandler.readResponseObject(in, String.class);
         return updateSuccessResponse;
     }
 
@@ -67,7 +65,7 @@ public class FoodItemService {
         String getPayload = gson.toJson(id);
 
         RequestHandler.sendRequest(out, "GET_ITEM", getPayload);
-        FoodItemResponseDto foodItem = ResponseHandler.readResponse(in, FoodItemResponseDto.class);
+        FoodItemResponseDto foodItem = ResponseHandler.readResponseObject(in, FoodItemResponseDto.class);
         return foodItem;
     }
 
@@ -79,7 +77,7 @@ public class FoodItemService {
         String getPayload = gson.toJson(id);
 
         RequestHandler.sendRequest(out, "DELETE_ITEM", getPayload);
-        String deleteSuccessMessage = ResponseHandler.readResponse(in, String.class);
+        String deleteSuccessMessage = ResponseHandler.readResponseObject(in, String.class);
         return deleteSuccessMessage;
     }
 
