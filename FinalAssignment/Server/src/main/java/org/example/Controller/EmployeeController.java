@@ -2,6 +2,7 @@ package org.example.Controller;
 
 import org.example.Dto.EmployeeMenuDto;
 import org.example.Entity.FoodItem;
+import org.example.Entity.Rating;
 import org.example.Entity.VotedItem;
 import org.example.Services.EmployeeService;
 
@@ -21,5 +22,9 @@ public class EmployeeController {
 
     public String chooseItems(List<Integer> foodItemIds){
         return employeeService.chooseItems(foodItemIds);
+    }
+
+    public String provideRating(Rating rating){
+        return employeeService.provideRating(rating);
     }
 }

@@ -31,7 +31,7 @@ public class Client {
                 switch (choice) {
                     case 1:
                         String sessionToken = authenticationService.login(scanner, in, out);
-                        MenuHandler menuHandler = MenuHandlerFactory.createHandler(authenticationService.getRoleFromToken(sessionToken));
+                        MenuHandler menuHandler = MenuHandlerFactory.createHandler(authenticationService.getRoleFromToken(sessionToken), sessionToken);
                         if(menuHandler != null){
                             menuHandler.showMenu(scanner, in, out);
                         }

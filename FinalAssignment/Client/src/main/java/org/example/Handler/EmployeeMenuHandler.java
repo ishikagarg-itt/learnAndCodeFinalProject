@@ -14,11 +14,11 @@ import java.util.Scanner;
 
 public class EmployeeMenuHandler implements MenuHandler{
 
-   // private final String sessionToken;
+    private final String sessionToken;
     private final EmployeeService employeeService;
 
-    public EmployeeMenuHandler(){
-        //this.sessionToken = sessionToken;
+    public EmployeeMenuHandler(String sessionToken){
+        this.sessionToken = sessionToken;
         employeeService = new EmployeeService();
     }
     @Override
@@ -33,7 +33,7 @@ public class EmployeeMenuHandler implements MenuHandler{
             switch (choice){
                 case 1:
                     System.out.println("choice:" + choice);
-                    List<EmployeeMenuDto> foodItems = employeeService.getRollOutMenu(in, out);
+                    employeeService.getRollOutMenu(in, out);
                     showChooseItemMenu(scanner, in, out);
                     break;
                 case 2:

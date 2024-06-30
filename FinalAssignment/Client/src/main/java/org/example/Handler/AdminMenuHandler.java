@@ -13,10 +13,8 @@ import java.util.Scanner;
 
 public class AdminMenuHandler implements MenuHandler {
     private final FoodItemService foodItemService;
-    //private final String sessionToken;
     public AdminMenuHandler(){
         foodItemService = new FoodItemService();
-        //this.sessionToken = sessionToken;
     }
     @Override
     public void showMenu(Scanner scanner, BufferedReader in, PrintWriter out) throws IOException {

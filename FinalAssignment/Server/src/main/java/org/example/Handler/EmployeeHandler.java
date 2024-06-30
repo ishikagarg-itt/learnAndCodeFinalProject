@@ -13,14 +13,31 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class EmployeeHandler {
+public class EmployeeHandler implements RoleHandler {
     private EmployeeController employeeController;
 
     public EmployeeHandler(){
         employeeController = new EmployeeController();
     }
 
-    public void handleGetRollOutMenu(PrintWriter out, String[] headerParts) {
+    @Override
+    public void handleCommands(String messageType, String payload, PrintWriter out) {
+        switch (messageType){
+            case "GET_ROLL_OUT_MENU":
+                handleGetRollOutMenu(out);
+                break;
+            case "CHOOSE_ITEMS":
+                handleChooseItems(out, payload);
+                break;
+            case "GIVE_RATING":
+                //recommendationHandler.handleRollOutMenu(out, headerParts, payload);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void handleGetRollOutMenu(PrintWriter out) {
         Gson gson = new Gson();
         List<EmployeeMenuDto> foodItems = employeeController.getRollOutMenu();
 
@@ -31,7 +48,7 @@ public class EmployeeHandler {
         System.out.println("Server sent response to client");
     }
 
-    public void handleChooseItems(PrintWriter out, String[] headerParts, String payload) {
+    private void handleChooseItems(PrintWriter out, String payload) {
         Gson gson = new Gson();
         List<Integer> chosenFoodItemIds = gson.fromJson(payload, new TypeToken<List<Integer>>() {}.getType());
         chosenFoodItemIds = chosenFoodItemIds
@@ -46,4 +63,5 @@ public class EmployeeHandler {
         out.println(responsePayload);
         System.out.println("Server sent response to client");
     }
+
 }

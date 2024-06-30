@@ -13,7 +13,7 @@ import org.example.utils.AuthenticationUtils;
 import java.io.PrintWriter;
 import java.util.Optional;
 
-public class LoginHandler{
+public class LoginHandler {
     private final Gson gson;
     private AuthenticationController authenticationController;
 
@@ -22,7 +22,7 @@ public class LoginHandler{
         this.gson = new Gson();
     }
 
-    public void handle(PrintWriter out, String payload) {
+    public String handle(PrintWriter out, String payload) {
         LoginRequestDto loginRequest = gson.fromJson(payload, LoginRequestDto.class);
         LoginResponseDto loginResponse = authenticationController.login(loginRequest);
         String responsePayload = gson.toJson(loginResponse);
@@ -30,5 +30,6 @@ public class LoginHandler{
         out.println(responseHeader);
         out.println(responsePayload);
         System.out.println("Server sent session token to client");
+        return loginResponse.getSessionToken();
     }
 }

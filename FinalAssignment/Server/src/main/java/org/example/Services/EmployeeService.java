@@ -2,6 +2,7 @@ package org.example.Services;
 
 import org.example.Dto.EmployeeMenuDto;
 import org.example.Entity.FoodItem;
+import org.example.Entity.Rating;
 import org.example.Entity.VotedItem;
 import org.example.Exception.NotFoundException;
 import org.example.Repository.VotedItemRepository;
@@ -29,5 +30,9 @@ public class EmployeeService {
             votedItemRepository.update(votedItem);
         }
         return "You have chosen the items to be prepared for tomorrow";
+    }
+
+    public String provideRating(Rating rating){
+        return null;
     }
 }

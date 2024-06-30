@@ -11,11 +11,16 @@ public class AuthenticationUtils {
     private static final Map<String, String> sessionMap = new ConcurrentHashMap<>();
     public static String generateSessionToken(User user) {
         String sessionToken = UUID.randomUUID().toString();
-        sessionMap.put(sessionToken, user.getEmployeeId());
-        return sessionToken + "|" + user.getEmployeeId() + "|" + user.getRole().getName();
+        sessionMap.put(sessionToken, user.getUserName());
+        return sessionToken + "|" + user.getUserName() + "|" + user.getRole().getName();
     }
 
     public static boolean isValidSessionToken(String sessionToken) {
         return sessionMap.containsKey(sessionToken);
+    }
+
+    public static String getRoleFromToken(String sessionToken){
+        String[] sessionTokenParts = sessionToken.split("\\|");
+        return sessionTokenParts[2];
     }
 }
