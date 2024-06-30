@@ -31,7 +31,7 @@ public class Client {
 //                switch (choice) {
                     //case 1:
                         //String sessionToken = authenticationService.login(scanner, in, out);
-                        MenuHandler menuHandler = MenuHandlerFactory.createHandler("Admin");
+                        MenuHandler menuHandler = MenuHandlerFactory.createHandler("Chef");
                         if(menuHandler != null){
                             menuHandler.showMenu(scanner, in, out);
                         }

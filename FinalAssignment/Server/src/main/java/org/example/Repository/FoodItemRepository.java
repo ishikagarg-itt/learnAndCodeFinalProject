@@ -10,7 +10,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
-import java.util.Collections;
 import java.util.List;
 
 public class FoodItemRepository implements GenericRepository<FoodItem, Integer> {
@@ -102,5 +101,15 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
                 "LIMIT 5";
 
         return jdbcTemplate.query(sql, new Object[]{foodType}, new FoodItemMapper());
+    }
+
+    public Boolean isExist(int id) {
+        String sql = "SELECT COUNT(*) FROM food_item WHERE id = ?";
+        try {
+            Integer count = jdbcTemplate.queryForObject(sql, new Object[]{id}, Integer.class);
+            return count != null && count > 0;
+        } catch (DataAccessException ex) {
+            throw new RuntimeException("Database error occurred", ex);
+        }
     }
 }

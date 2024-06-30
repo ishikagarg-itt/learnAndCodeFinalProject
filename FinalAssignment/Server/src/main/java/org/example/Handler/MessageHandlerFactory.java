@@ -38,6 +38,12 @@ public class MessageHandlerFactory {
             case "GET-RECOMMENDATION":
                 recommendationHandler.handle(out, headerParts, payload);
                 break;
+            case "ROLL_OUT_MENU":
+                recommendationHandler.handleRollOutMenu(out, headerParts, payload);
+                break;
+            case "GIVE_RATING":
+                //recommendationHandler.handleRollOutMenu(out, headerParts, payload);
+                break;
             case "EXIT":
                 exitHandler.handle(out);
             default:

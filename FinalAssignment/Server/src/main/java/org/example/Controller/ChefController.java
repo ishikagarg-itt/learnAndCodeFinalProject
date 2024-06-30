@@ -19,4 +19,8 @@ public class ChefController {
         List<FoodItem> foodItems = chefService.getRecommendation();
         return foodItems;
     }
+
+    public String rolloutMenu(List<Integer> foodItemIds){
+        return chefService.rollOutMenu(foodItemIds);
+    }
 }

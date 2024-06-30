@@ -1,15 +1,18 @@
 package org.example.Entity;
 
-public class Notification {
-    private Long id;
-    private NotificationType notificationType;
-    private int expiryDuration;
+import org.joda.time.DateTime;
 
-    public Long getId() {
+public class Notification {
+    private int id;
+    private NotificationType notificationType;
+    private DateTime notificationDate;
+    private String message;
+
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -21,11 +24,19 @@ public class Notification {
         this.notificationType = notificationType;
     }
 
-    public int getExpiryDuration() {
-        return expiryDuration;
+    public DateTime getNotificationDate() {
+        return notificationDate;
     }
 
-    public void setExpiryDuration(int expiryDuration) {
-        this.expiryDuration = expiryDuration;
+    public void setNotificationDate(DateTime notificationDate) {
+        this.notificationDate = notificationDate;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

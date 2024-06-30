@@ -2,6 +2,7 @@ package org.example.Handler;
 
 import org.example.Dto.FoodItemDto;
 import org.example.Dto.FoodItemResponseDto;
+import org.example.Services.ChefService;
 import org.example.Services.RecommendationService;
 
 import java.io.BufferedReader;
@@ -13,9 +14,11 @@ import java.util.Scanner;
 
 public class ChefMenuHandler implements MenuHandler{
     private RecommendationService recommendationService;
+    private ChefService chefService;
     //private final String sessionToken;
     public ChefMenuHandler(){
         recommendationService = new RecommendationService();
+        chefService = new ChefService();
         //this.sessionToken = sessionToken;
     }
 
@@ -34,6 +37,9 @@ public class ChefMenuHandler implements MenuHandler{
                     foodItems.stream().forEach(foodItemResponseDto -> foodItemResponseDto.toString());
                     break;
                 case 2:
+                    String rolloutResponse = chefService.rolloutMenu(in, out, scanner);
+                    System.out.println(rolloutResponse);
+                    break;
                 case 3:
                     System.out.println("Exiting from Chef Menu...");
                     return;
