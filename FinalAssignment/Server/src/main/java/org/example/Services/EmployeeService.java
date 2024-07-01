@@ -1,19 +1,27 @@
 package org.example.Services;
 
 import org.example.Dto.EmployeeMenuDto;
+import org.example.Dto.RatingDto;
 import org.example.Entity.FoodItem;
 import org.example.Entity.Rating;
 import org.example.Entity.VotedItem;
 import org.example.Exception.NotFoundException;
+import org.example.Repository.FoodItemRepository;
+import org.example.Repository.RatingRepository;
 import org.example.Repository.VotedItemRepository;
 
 import java.util.List;
 
 public class EmployeeService {
     private final VotedItemRepository votedItemRepository;
+    private final RatingRepository ratingRepository;
+
+    private final FoodItemRepository foodItemRepository;
 
     public EmployeeService(){
         votedItemRepository = new VotedItemRepository();
+        ratingRepository = new RatingRepository();
+        foodItemRepository = new FoodItemRepository();
     }
 
     public List<EmployeeMenuDto> getRollOutMenu(){
@@ -32,7 +40,18 @@ public class EmployeeService {
         return "You have chosen the items to be prepared for tomorrow";
     }
 
-    public String provideRating(Rating rating){
-        return null;
+    public String provideRating(RatingDto rating, String username){
+        boolean isExists = foodItemRepository.isExist(rating.getFoodItemId());
+        if(!isExists){
+            throw new NotFoundException("The food Item you rated does not exist");
+        }
+        Rating ratingTobeAdded = new Rating();
+        ratingTobeAdded.setRating(rating.getRating());
+        ratingTobeAdded.setComment(rating.getComment());
+        FoodItem foodItem = new FoodItem();
+        foodItem.setId(rating.getFoodItemId());
+        ratingTobeAdded.setFoodItem(foodItem);
+        ratingRepository.save(ratingTobeAdded, username);
+        return "You have rated the item successfully";
     }
 }

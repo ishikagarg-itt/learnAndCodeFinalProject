@@ -13,8 +13,11 @@ import java.util.Scanner;
 
 public class AdminMenuHandler implements MenuHandler {
     private final FoodItemService foodItemService;
-    public AdminMenuHandler(){
+
+    private final String sessionToken;
+    public AdminMenuHandler(String sessionToken){
         foodItemService = new FoodItemService();
+        this.sessionToken = sessionToken;
     }
     @Override
     public void showMenu(Scanner scanner, BufferedReader in, PrintWriter out) throws IOException {
@@ -31,23 +34,23 @@ public class AdminMenuHandler implements MenuHandler {
 
             switch (choice){
                 case 1:
-                    FoodItemDto addedFoodItem = foodItemService.add(in, out, scanner);
+                    FoodItemDto addedFoodItem = foodItemService.add(in, out, scanner, sessionToken);
                     addedFoodItem.toString();
                     break;
                 case 2:
-                    String updateSuccessMessage = foodItemService.update(in, out, scanner);
+                    String updateSuccessMessage = foodItemService.update(in, out, scanner, sessionToken);
                     System.out.println(updateSuccessMessage);
                     break;
                 case 3:
-                    String deleteSuccessMessage = foodItemService.delete(in, out, scanner);
+                    String deleteSuccessMessage = foodItemService.delete(in, out, scanner, sessionToken);
                     System.out.println(deleteSuccessMessage);
                     break;
                 case 4:
-                    FoodItemResponseDto foodItem = foodItemService.get(in, out, scanner);
+                    FoodItemResponseDto foodItem = foodItemService.get(in, out, scanner, sessionToken);
                     OutputHandler.printFoodItemResponse(foodItem);
                     break;
                 case 5:
-                    List<FoodItemResponseDto> getAllResponse = foodItemService.getAll(in, out);
+                    List<FoodItemResponseDto> getAllResponse = foodItemService.getAll(in, out, sessionToken);
                     for (FoodItemResponseDto item : getAllResponse) {
                         OutputHandler.printFoodItemResponse(item);
                     }

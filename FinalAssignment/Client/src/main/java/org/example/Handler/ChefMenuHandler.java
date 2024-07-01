@@ -15,11 +15,11 @@ import java.util.Scanner;
 public class ChefMenuHandler implements MenuHandler{
     private RecommendationService recommendationService;
     private ChefService chefService;
-    //private final String sessionToken;
-    public ChefMenuHandler(){
+    private final String sessionToken;
+    public ChefMenuHandler(String sessionToken){
         recommendationService = new RecommendationService();
         chefService = new ChefService();
-        //this.sessionToken = sessionToken;
+        this.sessionToken = sessionToken;
     }
 
     @Override
@@ -33,13 +33,10 @@ public class ChefMenuHandler implements MenuHandler{
             scanner.nextLine();
             switch (choice){
                 case 1:
-                    System.out.println("choice:" + choice);
-                    List<FoodItemResponseDto> foodItems = recommendationService.getRecommendation(in, out);
-                    System.out.println("recommendation completed");
-                    foodItems.stream().forEach(foodItemResponseDto -> foodItemResponseDto.toString());
+                    recommendationService.getRecommendation(in, out, sessionToken);
                     break;
                 case 2:
-                    String rolloutResponse = chefService.rolloutMenu(in, out, scanner);
+                    String rolloutResponse = chefService.rolloutMenu(in, out, scanner, sessionToken);
                     System.out.println(rolloutResponse);
                     break;
                 case 3:

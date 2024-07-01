@@ -1,14 +1,14 @@
 package org.example.Handler;
 
 public class RoleHandlerFactory {
-    public static RoleHandler createHandler(String roleType) {
+    public static RoleHandler createHandler(String roleType, String sessionToken) {
         switch (roleType) {
             case "Admin":
-                return new AdminHandler();
+                return new AdminHandler(sessionToken);
             case "Chef":
-                return new ChefHandler();
+                return new ChefHandler(sessionToken);
             case "Employee":
-                return new EmployeeHandler();
+                return new EmployeeHandler(sessionToken);
             default:
                 return null;
         }

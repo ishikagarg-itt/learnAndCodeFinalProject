@@ -2,9 +2,7 @@ package org.example.Repository;
 
 import org.example.Config.DataSourceConfig;
 import org.example.Config.MySqlDataSourceConfig;
-import org.example.Entity.FoodItem;
 import org.example.Entity.User;
-import org.example.Exception.NotFoundException;
 import org.example.Mapper.UserRowMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,15 +20,18 @@ public class UserRepository implements GenericRepository<User, Integer> {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public Optional<User> findByName(String userName) {
-        String sql = "SELECT u.*, r.id as role_id, r.name as role_name " +
-                "FROM user u " +
-                "LEFT JOIN role r ON u.role_id = r.id " +
-                "WHERE u.username = ?";
+    public Optional<User> findByUserNameAndEmployeeId(String userName, String employeeId) {
+        try {
+            String sql = "SELECT u.*, r.id as role_id, r.name as role_name " +
+                    "FROM user u " +
+                    "LEFT JOIN role r ON u.role_id = r.id " +
+                    "WHERE u.username = ? AND u.employee_id = ?";
 
-        User user = jdbcTemplate.queryForObject(sql, new Object[]{userName}, new UserRowMapper());
-        return Optional.ofNullable(user);
-
+            User user = jdbcTemplate.queryForObject(sql, new Object[]{userName, employeeId}, new UserRowMapper());
+            return Optional.ofNullable(user);
+        }catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

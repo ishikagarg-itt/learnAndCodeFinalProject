@@ -26,17 +26,19 @@ public class EmployeeMenuHandler implements MenuHandler{
         while(true){
             System.out.println("1. Choose food Item");
             System.out.println("2. Give feedback");
+            System.out.println("3. View Notifications");
             System.out.println("3. Logout");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice){
                 case 1:
-                    System.out.println("choice:" + choice);
-                    employeeService.getRollOutMenu(in, out);
+                    employeeService.getRollOutMenu(in, out, sessionToken);
                     showChooseItemMenu(scanner, in, out);
                     break;
                 case 2:
+                    String ratingResponse = employeeService.provideRating(in, out, scanner, sessionToken);
+                    System.out.println(ratingResponse);
                     break;
                 case 3:
                     System.out.println("Exiting from Chef Menu...");
@@ -64,7 +66,7 @@ public class EmployeeMenuHandler implements MenuHandler{
                     chosenItems = employeeService.addChosenItemInList(foodItemId, chosenItems);
                     break;
                 case 2:
-                    String chooseItemsResponse = employeeService.chooseFoodItem(in, out, chosenItems);
+                    String chooseItemsResponse = employeeService.chooseFoodItem(in, out, chosenItems, sessionToken);
                     System.out.println(chooseItemsResponse);
                     isExit = true;
                     break;

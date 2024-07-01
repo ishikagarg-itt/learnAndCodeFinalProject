@@ -18,7 +18,9 @@ public class Server {
                 new Thread(clientHandler).start();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            if(e instanceof SocketException){
+                System.out.println("There was some problem on the client side");
+            }
         }
     }
 

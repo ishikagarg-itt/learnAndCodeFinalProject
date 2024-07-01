@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 public class FoodItemService {
 
-    public FoodItemDto add(BufferedReader in, PrintWriter out, Scanner scanner) throws IOException {
+    public FoodItemDto add(BufferedReader in, PrintWriter out, Scanner scanner, String sessionToken) throws IOException {
         System.out.print("Enter name: ");
         String name = scanner.nextLine();
         System.out.print("Enter type: ");
@@ -30,19 +30,19 @@ public class FoodItemService {
         Gson gson = new Gson();
         String addPayload = gson.toJson(foodItem);
 
-        RequestHandler.sendRequest(out, "ADD_ITEM", addPayload);
+        RequestHandler.sendRequest(out, "ADD_ITEM", addPayload, sessionToken);
         FoodItemDto addedItem = ResponseHandler.readResponseObject(in, FoodItemDto.class);
         return addedItem;
     }
 
-    public String update(BufferedReader in, PrintWriter out, Scanner scanner) throws IOException {
+    public String update(BufferedReader in, PrintWriter out, Scanner scanner, String sessionToken) throws IOException {
         System.out.println("Enter food item Id:");
         int id = scanner.nextInt();
         scanner.nextLine();
         System.out.print("Enter name: ");
         String name = scanner.nextLine();
         System.out.println("Enter Availability(true/false): ");
-        Boolean availability_status = scanner.nextBoolean();
+        Boolean availability_status = Boolean.parseBoolean(scanner.nextLine());
 
         FoodItemDto foodItem = new FoodItemDto();
         foodItem.setName(name);
@@ -52,37 +52,37 @@ public class FoodItemService {
         Gson gson = new Gson();
         String updatePayload = gson.toJson(foodItem);
 
-        RequestHandler.sendRequest(out, "UPDATE_ITEM", updatePayload);
+        RequestHandler.sendRequest(out, "UPDATE_ITEM", updatePayload, sessionToken);
         String updateSuccessResponse = ResponseHandler.readResponseObject(in, String.class);
         return updateSuccessResponse;
     }
 
-    public FoodItemResponseDto get(BufferedReader in, PrintWriter out, Scanner scanner) throws IOException {
+    public FoodItemResponseDto get(BufferedReader in, PrintWriter out, Scanner scanner, String sessionToken) throws IOException {
         System.out.println("Enter food item Id:");
         int id = scanner.nextInt();
 
         Gson gson = new Gson();
         String getPayload = gson.toJson(id);
 
-        RequestHandler.sendRequest(out, "GET_ITEM", getPayload);
+        RequestHandler.sendRequest(out, "GET_ITEM", getPayload, sessionToken);
         FoodItemResponseDto foodItem = ResponseHandler.readResponseObject(in, FoodItemResponseDto.class);
         return foodItem;
     }
 
-    public String delete(BufferedReader in, PrintWriter out, Scanner scanner) throws IOException {
+    public String delete(BufferedReader in, PrintWriter out, Scanner scanner, String sessionToken) throws IOException {
         System.out.println("Enter food item Id:");
         int id = scanner.nextInt();
 
         Gson gson = new Gson();
-        String getPayload = gson.toJson(id);
+        String deletePayload = gson.toJson(id);
 
-        RequestHandler.sendRequest(out, "DELETE_ITEM", getPayload);
+        RequestHandler.sendRequest(out, "DELETE_ITEM", deletePayload, sessionToken);
         String deleteSuccessMessage = ResponseHandler.readResponseObject(in, String.class);
         return deleteSuccessMessage;
     }
 
-    public List<FoodItemResponseDto> getAll(BufferedReader in, PrintWriter out) throws IOException {
-        RequestHandler.sendRequest(out, "GET_ALL_ITEM", "");
+    public List<FoodItemResponseDto> getAll(BufferedReader in, PrintWriter out, String sessionToken) throws IOException {
+        RequestHandler.sendRequest(out, "GET_ALL_ITEM", "", sessionToken);
 
         List<FoodItemResponseDto> getAllResponse =ResponseHandler.readResponseList(in, FoodItemResponseDto.class);
 

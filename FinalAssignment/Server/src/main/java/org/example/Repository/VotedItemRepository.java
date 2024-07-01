@@ -40,7 +40,8 @@ public class VotedItemRepository {
                 "FROM voted_item vi " +
                 "LEFT JOIN food_item fi ON vi.food_item_id = fi.id " +
                 "LEFT JOIN food_item_type fit ON fi.type_id = fit.id " +
-                "LEFT JOIN item_audit ia ON ia.food_item_id = fi.id";
+                "LEFT JOIN item_audit ia ON ia.food_item_id = fi.id " +
+                "WHERE vi.voting_date = CURDATE()";
         try {
             List<EmployeeMenuDto> employeeMenuItems = jdbcTemplate.query(sql, new EmployeeMenuMapper());
             return employeeMenuItems;

@@ -12,9 +12,11 @@ import java.util.List;
 public class AdminHandler implements RoleHandler {
     private final FoodItemController foodItemController;
     private final Gson gson;
+    String sessionToken;
 
-    public AdminHandler() {
+    public AdminHandler(String sessionToken) {
         foodItemController = new FoodItemController();
+        this.sessionToken = sessionToken;
         gson = new Gson();
     }
 
@@ -35,6 +37,8 @@ public class AdminHandler implements RoleHandler {
                 break;
             case "DELETE_ITEM":
                 handleDelete(out, payload);
+                break;
+            case "LOGOUT":
                 break;
             default:
                 System.out.println("Invalid choice");

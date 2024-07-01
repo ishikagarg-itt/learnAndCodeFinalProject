@@ -4,9 +4,9 @@ public class MenuHandlerFactory {
     public static MenuHandler createHandler(String roleType, String sessionToken) {
         switch (roleType) {
             case "Admin":
-                return new AdminMenuHandler();
+                return new AdminMenuHandler(sessionToken);
             case "Chef":
-                return new ChefMenuHandler();
+                return new ChefMenuHandler(sessionToken);
             case "Employee":
                 return new EmployeeMenuHandler(sessionToken);
             default:

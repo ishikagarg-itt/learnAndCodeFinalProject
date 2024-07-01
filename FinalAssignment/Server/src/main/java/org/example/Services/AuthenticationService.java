@@ -18,7 +18,7 @@ public class AuthenticationService {
     }
 
     public LoginResponseDto login(LoginRequestDto loginRequest) {
-        Optional<User> user = userRepository.findByName(loginRequest.getUserName());
+        Optional<User> user = userRepository.findByUserNameAndEmployeeId(loginRequest.getUserName(), loginRequest.getEmployeeId());
 
         String sessionToken = null;
 

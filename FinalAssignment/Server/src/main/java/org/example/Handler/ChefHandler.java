@@ -10,9 +10,11 @@ import java.util.List;
 
 public class ChefHandler implements RoleHandler {
     private final ChefController chefController;
+    String sessionToken;
 
-    public ChefHandler() {
+    public ChefHandler(String sessionToken) {
         chefController = new ChefController();
+        this.sessionToken = sessionToken;
     }
 
     @Override
@@ -23,6 +25,8 @@ public class ChefHandler implements RoleHandler {
                 break;
             case "ROLL_OUT_MENU":
                 handleRollOutMenu(out, payload);
+                break;
+            case "LOGOUT":
                 break;
             default:
                 System.out.println("Invalid choice");

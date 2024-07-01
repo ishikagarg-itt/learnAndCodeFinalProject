@@ -22,17 +22,15 @@ public class RatingRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public void save(Rating rating){
-        String sql = "INSERT INTO rating (rating, comment, food_item_id, user_id) VALUES (?, ?, ?, ?)";
+    public void save(Rating rating, String username){
+        String sql = "INSERT INTO rating (rating, comment, food_item_id, username) VALUES (?, ?, ?, ?)";
         int rowsAffected = jdbcTemplate.update(sql,
                 rating.getRating(),
                 rating.getComment(),
                 rating.getFoodItem().getId(),
-                rating.getUser().getId());
+                username);
 
-        if (rowsAffected > 0) {
-            return;
-        } else {
+        if (rowsAffected == 0) {
             throw new RuntimeException("Failed to insert food item into the database");
         }
     }

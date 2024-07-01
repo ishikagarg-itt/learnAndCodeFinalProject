@@ -48,7 +48,9 @@ public class Client {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            if(e instanceof ConnectException){
+                throw new RuntimeException("You did not start the server for the client to connect");
+            }
         }
     }
 

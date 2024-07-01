@@ -11,8 +11,8 @@ import java.io.PrintWriter;
 import java.util.List;
 
 public class RecommendationService {
-    public List<FoodItemResponseDto> getRecommendation(BufferedReader in, PrintWriter out) throws IOException {
-        RequestHandler.sendRequest(out, "GET-RECOMMENDATION", "");
+    public List<FoodItemResponseDto> getRecommendation(BufferedReader in, PrintWriter out, String sessionToken) throws IOException {
+        RequestHandler.sendRequest(out, "GET-RECOMMENDATION", "", sessionToken);
 
         List<FoodItemResponseDto> recommendationResponse = ResponseHandler.readResponseList(in, FoodItemResponseDto.class);
 

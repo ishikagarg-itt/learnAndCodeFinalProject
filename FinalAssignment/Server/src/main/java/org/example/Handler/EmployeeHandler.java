@@ -4,20 +4,21 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.example.Controller.EmployeeController;
 import org.example.Dto.EmployeeMenuDto;
-import org.example.Entity.FoodItem;
-import org.example.Entity.VotedItem;
+import org.example.Dto.RatingDto;
+import org.example.Entity.Rating;
+import org.example.utils.AuthenticationUtils;
 
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class EmployeeHandler implements RoleHandler {
     private EmployeeController employeeController;
+    String sessionToken;
 
-    public EmployeeHandler(){
+    public EmployeeHandler(String sessionToken){
         employeeController = new EmployeeController();
+        this.sessionToken = sessionToken;
     }
 
     @Override
@@ -30,7 +31,9 @@ public class EmployeeHandler implements RoleHandler {
                 handleChooseItems(out, payload);
                 break;
             case "GIVE_RATING":
-                //recommendationHandler.handleRollOutMenu(out, headerParts, payload);
+                handleRating(out, payload, AuthenticationUtils.getSession(sessionToken));
+                break;
+            case "LOGOUT":
                 break;
             default:
                 break;
@@ -58,6 +61,18 @@ public class EmployeeHandler implements RoleHandler {
         String chooseItemResponse = employeeController.chooseItems(chosenFoodItemIds);
 
         String responsePayload = gson.toJson(chooseItemResponse);
+        String responseHeader = "SUCCESS|" + responsePayload.length();
+        out.println(responseHeader);
+        out.println(responsePayload);
+        System.out.println("Server sent response to client");
+    }
+
+    private void handleRating(PrintWriter out, String payload, String username){
+        Gson gson = new Gson();
+        RatingDto rating = gson.fromJson(payload, RatingDto.class);
+        String ratingResponse = employeeController.provideRating(rating, username);
+
+        String responsePayload = gson.toJson(ratingResponse);
         String responseHeader = "SUCCESS|" + responsePayload.length();
         out.println(responseHeader);
         out.println(responsePayload);
