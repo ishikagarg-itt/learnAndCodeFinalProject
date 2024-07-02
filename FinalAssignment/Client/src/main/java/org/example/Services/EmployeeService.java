@@ -2,6 +2,7 @@ package org.example.Services;
 
 import com.google.gson.Gson;
 import org.example.Dto.EmployeeMenuDto;
+import org.example.Dto.NotificationDto;
 import org.example.Dto.RatingDto;
 import org.example.Handler.OutputHandler;
 import org.example.Handler.RequestHandler;
@@ -61,5 +62,17 @@ public class EmployeeService {
 
         String chooseItemResponse = ResponseHandler.readResponseObject(in, String.class);
         return chooseItemResponse;
+    }
+
+    public List<NotificationDto> getNotifications(BufferedReader in, PrintWriter out, String sessionToken) throws IOException {
+        RequestHandler.sendRequest(out, "VIEW_NOTIFICATIONS", "", sessionToken);
+
+        List<NotificationDto> notifications = ResponseHandler.readResponseList(in, NotificationDto.class);
+
+        for (NotificationDto notification : notifications) {
+            OutputHandler.printNotificationResponse(notification);
+        }
+
+        return notifications;
     }
 }

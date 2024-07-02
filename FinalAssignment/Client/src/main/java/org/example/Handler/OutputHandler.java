@@ -3,7 +3,11 @@ package org.example.Handler;
 import org.example.Dto.EmployeeMenuDto;
 import org.example.Dto.FoodItemResponseDto;
 import org.example.Dto.FoodItemTypeDto;
+import org.example.Dto.NotificationDto;
+import org.example.Dto.NotificationTypeDto;
 import org.example.Dto.VotedItemDto;
+
+import javax.management.Notification;
 
 public class OutputHandler {
     public static void printFoodItemResponse(FoodItemResponseDto item){
@@ -30,6 +34,17 @@ public class OutputHandler {
 
         System.out.println("Rating: " + item.getAverageRating());
         System.out.println("Comment: " + item.getComment());
+
+        System.out.println("-----");
+    }
+
+    public static void printNotificationResponse(NotificationDto notification) {
+        System.out.println("Message: " + notification.getMessage());
+
+        NotificationTypeDto type = notification.getNotificationType();
+        if (type != null) {
+            System.out.println("Type Name: " + type.getType());
+        }
 
         System.out.println("-----");
     }

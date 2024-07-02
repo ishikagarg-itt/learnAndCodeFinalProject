@@ -62,4 +62,11 @@ public class RatingRepository {
             throw new RuntimeException("Database error occurred", ex);
         }
     }
+
+    public boolean hasUserRatedToday(String username, int foodItemId) {
+        String sql = "SELECT COUNT(*) FROM rating WHERE username = ? AND food_item_id = ? AND DATE(rating_date) = CURDATE()";
+
+        Integer count = jdbcTemplate.queryForObject(sql, new Object[]{username, foodItemId}, Integer.class);
+        return count != null && count > 0;
+    }
 }

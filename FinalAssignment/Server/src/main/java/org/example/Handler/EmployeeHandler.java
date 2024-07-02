@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import org.example.Controller.EmployeeController;
 import org.example.Dto.EmployeeMenuDto;
 import org.example.Dto.RatingDto;
+import org.example.Entity.Notification;
 import org.example.Entity.Rating;
 import org.example.utils.AuthenticationUtils;
 
@@ -32,6 +33,9 @@ public class EmployeeHandler implements RoleHandler {
                 break;
             case "GIVE_RATING":
                 handleRating(out, payload, AuthenticationUtils.getSession(sessionToken));
+                break;
+            case "VIEW_NOTIFICATIONS":
+                handleViewNotifications(out);
                 break;
             case "LOGOUT":
                 break;
@@ -73,6 +77,17 @@ public class EmployeeHandler implements RoleHandler {
         String ratingResponse = employeeController.provideRating(rating, username);
 
         String responsePayload = gson.toJson(ratingResponse);
+        String responseHeader = "SUCCESS|" + responsePayload.length();
+        out.println(responseHeader);
+        out.println(responsePayload);
+        System.out.println("Server sent response to client");
+    }
+
+    private void handleViewNotifications(PrintWriter out){
+        Gson gson = new Gson();
+        List<Notification> notifications = employeeController.viewNotifications();
+
+        String responsePayload = gson.toJson(notifications);
         String responseHeader = "SUCCESS|" + responsePayload.length();
         out.println(responseHeader);
         out.println(responsePayload);

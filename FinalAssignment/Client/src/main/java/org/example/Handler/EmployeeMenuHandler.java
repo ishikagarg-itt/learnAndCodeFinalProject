@@ -27,7 +27,7 @@ public class EmployeeMenuHandler implements MenuHandler{
             System.out.println("1. Choose food Item");
             System.out.println("2. Give feedback");
             System.out.println("3. View Notifications");
-            System.out.println("3. Logout");
+            System.out.println("4. Logout");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -41,6 +41,9 @@ public class EmployeeMenuHandler implements MenuHandler{
                     System.out.println(ratingResponse);
                     break;
                 case 3:
+                    employeeService.getNotifications(in, out, sessionToken);
+                    break;
+                case 4:
                     System.out.println("Exiting from Chef Menu...");
                     return;
                 default:

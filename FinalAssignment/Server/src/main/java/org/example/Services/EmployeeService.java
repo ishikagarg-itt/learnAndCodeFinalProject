@@ -3,6 +3,7 @@ package org.example.Services;
 import org.example.Dto.EmployeeMenuDto;
 import org.example.Dto.RatingDto;
 import org.example.Entity.FoodItem;
+import org.example.Entity.Notification;
 import org.example.Entity.Rating;
 import org.example.Entity.VotedItem;
 import org.example.Exception.NotFoundException;
@@ -15,13 +16,14 @@ import java.util.List;
 public class EmployeeService {
     private final VotedItemRepository votedItemRepository;
     private final RatingRepository ratingRepository;
-
     private final FoodItemRepository foodItemRepository;
+    private final NotificationService notificationService;
 
     public EmployeeService(){
         votedItemRepository = new VotedItemRepository();
         ratingRepository = new RatingRepository();
         foodItemRepository = new FoodItemRepository();
+        notificationService = new NotificationService();
     }
 
     public List<EmployeeMenuDto> getRollOutMenu(){
@@ -45,6 +47,11 @@ public class EmployeeService {
         if(!isExists){
             throw new NotFoundException("The food Item you rated does not exist");
         }
+
+        if (ratingRepository.hasUserRatedToday(username, rating.getFoodItemId())) {
+            throw new IllegalStateException("You have already rated this food item today.");
+        }
+
         Rating ratingTobeAdded = new Rating();
         ratingTobeAdded.setRating(rating.getRating());
         ratingTobeAdded.setComment(rating.getComment());
@@ -53,5 +60,9 @@ public class EmployeeService {
         ratingTobeAdded.setFoodItem(foodItem);
         ratingRepository.save(ratingTobeAdded, username);
         return "You have rated the item successfully";
+    }
+
+    public List<Notification> viewNotifications(){
+        return notificationService.getNotifications();
     }
 }

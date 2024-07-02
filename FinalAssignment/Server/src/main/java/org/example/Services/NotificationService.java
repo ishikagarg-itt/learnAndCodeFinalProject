@@ -5,6 +5,8 @@ import org.example.Entity.NotificationType;
 import org.example.Repository.NotificationRepository;
 import org.example.Repository.NotificationTypeRepository;
 
+import java.util.List;
+
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
@@ -27,5 +29,9 @@ public class NotificationService {
         notificationType.setType(type);
         notification.setNotificationType(notificationType);
         return notification;
+    }
+
+    public List<Notification> getNotifications(){
+        return notificationRepository.getNotificationsForCurrentDate();
     }
 }

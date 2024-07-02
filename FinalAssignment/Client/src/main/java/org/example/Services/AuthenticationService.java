@@ -34,7 +34,7 @@ public class AuthenticationService {
     }
 
     public static String getRoleFromToken(String sessionToken){
-        String[] sessionTokenParts = sessionToken.split("\\|");
+        String[] sessionTokenParts = sessionToken.split("\\/");
         return sessionTokenParts[2];
     }
 }

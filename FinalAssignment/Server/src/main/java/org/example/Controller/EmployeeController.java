@@ -2,6 +2,7 @@ package org.example.Controller;
 
 import org.example.Dto.EmployeeMenuDto;
 import org.example.Dto.RatingDto;
+import org.example.Entity.Notification;
 import org.example.Entity.Rating;
 import org.example.Services.EmployeeService;
 
@@ -25,5 +26,9 @@ public class EmployeeController {
 
     public String provideRating(RatingDto rating, String username){
         return employeeService.provideRating(rating, username);
+    }
+
+    public List<Notification> viewNotifications(){
+        return employeeService.viewNotifications();
     }
 }
