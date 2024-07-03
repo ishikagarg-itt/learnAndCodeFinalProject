@@ -18,12 +18,14 @@ public class EmployeeService {
     private final RatingRepository ratingRepository;
     private final FoodItemRepository foodItemRepository;
     private final NotificationService notificationService;
+    private final RecommendationService recommendationService;
 
     public EmployeeService(){
         votedItemRepository = new VotedItemRepository();
         ratingRepository = new RatingRepository();
         foodItemRepository = new FoodItemRepository();
         notificationService = new NotificationService();
+        recommendationService = new RecommendationService();
     }
 
     public List<EmployeeMenuDto> getRollOutMenu(){
@@ -58,6 +60,7 @@ public class EmployeeService {
         FoodItem foodItem = new FoodItem();
         foodItem.setId(rating.getFoodItemId());
         ratingTobeAdded.setFoodItem(foodItem);
+        recommendationService.updateItemAudit(rating.getFoodItemId());
         ratingRepository.save(ratingTobeAdded, username);
         return "You have rated the item successfully";
     }

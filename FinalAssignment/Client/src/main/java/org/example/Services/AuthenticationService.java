@@ -28,6 +28,9 @@ public class AuthenticationService {
 
         RequestHandler.sendRequest(out, "LOGIN", loginPayload, null);
         LoginResponseDto loginResponse = ResponseHandler.readResponseObject(in, LoginResponseDto.class);
+        if(loginResponse == null){
+            return null;
+        }
         String sessionToken = loginResponse.getSessionToken();
         System.out.println("Logged in, session token: " + sessionToken);
         return sessionToken;

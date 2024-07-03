@@ -31,5 +31,8 @@ public class LoginHandler {
         out.println(responsePayload);
         System.out.println("Server sent session token to client");
         return loginResponse.getSessionToken();
+
     }
+
+
 }

@@ -22,15 +22,6 @@ public class RecommendationService {
     }
     public List<FoodItem> getRecommendation(){
         List<FoodItem> allTopFoodItems = new ArrayList<>();
-        List<FoodItemRating> foodItemRatings = ratingRepository.getFoodItemRatingsForToday();
-
-        for (FoodItemRating foodItemRating : foodItemRatings) {
-            List<String> comments = Arrays.asList(foodItemRating.getComments().split(", "));
-
-            double averageSentiment = SentimentAnalysis.analyzeSentiments(comments);
-            ratingRepository.updateItemAudit(foodItemRating, averageSentiment);
-        }
-
         List<FoodItem> breakfastItems = foodItemRepository.getTopFoodItems("Breakfast");
         List<FoodItem> lunchItems = foodItemRepository.getTopFoodItems("Lunch");
         List<FoodItem> dinnerItems = foodItemRepository.getTopFoodItems("Dinner");
@@ -40,5 +31,16 @@ public class RecommendationService {
         allTopFoodItems.addAll(dinnerItems);
 
         return allTopFoodItems;
+    }
+
+    public void updateItemAudit(int foodItemId){
+        List<FoodItemRating> foodItemRatings = ratingRepository.getFoodItemRatingsForToday(foodItemId);
+
+        for (FoodItemRating foodItemRating : foodItemRatings) {
+            List<String> comments = Arrays.asList(foodItemRating.getComments().split(", "));
+
+            double averageSentiment = SentimentAnalysis.analyzeSentiments(comments);
+            ratingRepository.updateItemAudit(foodItemRating, averageSentiment);
+        }
     }
 }

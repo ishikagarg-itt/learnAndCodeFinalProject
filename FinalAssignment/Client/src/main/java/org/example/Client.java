@@ -31,6 +31,9 @@ public class Client {
                 switch (choice) {
                     case 1:
                         String sessionToken = authenticationService.login(scanner, in, out);
+                        if(sessionToken == null){
+                            break;
+                        }
                         MenuHandler menuHandler = MenuHandlerFactory.createHandler(authenticationService.getRoleFromToken(sessionToken), sessionToken);
                         if(menuHandler != null){
                             menuHandler.showMenu(scanner, in, out);
@@ -51,9 +54,6 @@ public class Client {
             if(e instanceof ConnectException){
                 throw new RuntimeException("You did not start the server for the client to connect");
             }
-        }
-        catch(NullPointerException exception){
-            System.out.println("Some error occurred on the server side");
         }
     }
 

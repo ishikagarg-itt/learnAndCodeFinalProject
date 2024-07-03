@@ -35,13 +35,13 @@ public class RatingRepository {
         }
     }
 
-    public List<FoodItemRating> getFoodItemRatingsForToday(){
-        String sql = "SELECT food_item_id, AVG(rating) AS average_rating, GROUP_CONCAT(comment SEPARATOR ', ') AS comments " +
-                "FROM rating " +
-                "WHERE rating_date = CURDATE() " +
-                "GROUP BY food_item_id";
+    public List<FoodItemRating> getFoodItemRatingsForToday(int foodItemId){
+        String sql = "SELECT FoodItemId, AVG(Rating) AS average_rating, GROUP_CONCAT(Comment SEPARATOR ', ') AS comments " +
+                "FROM feedbacks " +
+                "WHERE Date = CURDATE() AND FoodItemId = ? " +
+                "GROUP BY FoodItemId";
 
-        List<FoodItemRating> foodItemRatings = jdbcTemplate.query(sql, new RatingMapper());
+        List<FoodItemRating> foodItemRatings = jdbcTemplate.query(sql, new Object[]{foodItemId}, new RatingMapper());
         return foodItemRatings;
     }
 
