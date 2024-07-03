@@ -2,6 +2,7 @@ package org.example.Handler;
 
 import org.example.Dto.FoodItemDto;
 import org.example.Dto.FoodItemResponseDto;
+import org.example.Exception.OperationFailedException;
 import org.example.Services.FoodItemService;
 import org.example.Services.RecommendationService;
 
@@ -32,32 +33,36 @@ public class AdminMenuHandler implements MenuHandler {
             int choice = scanner.nextInt();
             scanner.nextLine();
 
-            switch (choice){
-                case 1:
-                    FoodItemDto addedFoodItem = foodItemService.add(in, out, scanner, sessionToken);
-                    System.out.println(addedFoodItem.toString());
-                    break;
-                case 2:
-                    String updateSuccessMessage = foodItemService.update(in, out, scanner, sessionToken);
-                    System.out.println(updateSuccessMessage);
-                    break;
-                case 3:
-                    String deleteSuccessMessage = foodItemService.delete(in, out, scanner, sessionToken);
-                    System.out.println(deleteSuccessMessage);
-                    break;
-                case 4:
-                    FoodItemResponseDto foodItem = foodItemService.get(in, out, scanner, sessionToken);
-                    OutputHandler.printFoodItemResponse(foodItem);
-                    break;
-                case 5:
-                    List<FoodItemResponseDto> getAllResponse = foodItemService.getAll(in, out, sessionToken);
-                    for (FoodItemResponseDto item : getAllResponse) {
-                        OutputHandler.printFoodItemResponse(item);
-                    }
-                    break;
-                case 6:
-                    System.out.println("Exiting from Admin Menu...");
-                    return;
+            try {
+                switch (choice) {
+                    case 1:
+                        FoodItemDto addedFoodItem = foodItemService.add(in, out, scanner, sessionToken);
+                        System.out.println(addedFoodItem.toString());
+                        break;
+                    case 2:
+                        String updateSuccessMessage = foodItemService.update(in, out, scanner, sessionToken);
+                        System.out.println(updateSuccessMessage);
+                        break;
+                    case 3:
+                        String deleteSuccessMessage = foodItemService.delete(in, out, scanner, sessionToken);
+                        System.out.println(deleteSuccessMessage);
+                        break;
+                    case 4:
+                        FoodItemResponseDto foodItem = foodItemService.get(in, out, scanner, sessionToken);
+                        OutputHandler.printFoodItemResponse(foodItem);
+                        break;
+                    case 5:
+                        List<FoodItemResponseDto> getAllResponse = foodItemService.getAll(in, out, sessionToken);
+                        for (FoodItemResponseDto item : getAllResponse) {
+                            OutputHandler.printFoodItemResponse(item);
+                        }
+                        break;
+                    case 6:
+                        System.out.println("Exiting from Admin Menu...");
+                        return;
+                }
+            }catch (OperationFailedException exception){
+                System.out.println(exception.getMessage());
             }
         }
     }

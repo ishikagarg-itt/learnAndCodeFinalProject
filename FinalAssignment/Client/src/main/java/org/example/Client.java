@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.Exception.OperationFailedException;
 import org.example.Handler.MenuHandler;
 import org.example.Handler.MenuHandlerFactory;
 import org.example.Services.AuthenticationService;
@@ -28,26 +29,26 @@ public class Client {
             while (true) {
                 MenuHandlerFactory.showInitialMenu();
                 int choice = getUserChoice(scanner);
-                switch (choice) {
-                    case 1:
-                        String sessionToken = authenticationService.login(scanner, in, out);
-                        if(sessionToken == null){
+                try {
+                    switch (choice) {
+                        case 1:
+                            String sessionToken = authenticationService.login(scanner, in, out);
+                            MenuHandler menuHandler = MenuHandlerFactory.createHandler(authenticationService.getRoleFromToken(sessionToken), sessionToken);
+                            if (menuHandler != null) {
+                                menuHandler.showMenu(scanner, in, out);
+                            } else {
+                                System.out.println("Invalid role type");
+                            }
                             break;
-                        }
-                        MenuHandler menuHandler = MenuHandlerFactory.createHandler(authenticationService.getRoleFromToken(sessionToken), sessionToken);
-                        if(menuHandler != null){
-                            menuHandler.showMenu(scanner, in, out);
-                        }
-                        else {
-                            System.out.println("Invalid role type");
-                        }
-                        break;
-                    case 2:
-                        System.out.println("Exiting...");
-                        return;
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
+                        case 2:
+                            System.out.println("Exiting...");
+                            return;
+                        default:
+                            System.out.println("Invalid choice. Please try again.");
 
+                    }
+                }catch (OperationFailedException exception){
+                    System.out.println(exception.getMessage());
                 }
             }
         } catch (IOException e) {

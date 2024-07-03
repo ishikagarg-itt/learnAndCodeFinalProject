@@ -3,6 +3,7 @@ package org.example.Handler;
 import org.example.Dto.EmployeeMenuDto;
 import org.example.Dto.FoodItemResponseDto;
 import org.example.Dto.VotedItemDto;
+import org.example.Exception.OperationFailedException;
 import org.example.Services.EmployeeService;
 
 import java.io.BufferedReader;
@@ -31,24 +32,29 @@ public class EmployeeMenuHandler implements MenuHandler{
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
-            switch (choice){
-                case 1:
-                    employeeService.getRollOutMenu(in, out, sessionToken);
-                    showChooseItemMenu(scanner, in, out);
-                    break;
-                case 2:
-                    String ratingResponse = employeeService.provideRating(in, out, scanner, sessionToken);
-                    System.out.println(ratingResponse);
-                    break;
-                case 3:
-                    employeeService.getNotifications(in, out, sessionToken);
-                    break;
-                case 4:
-                    System.out.println("Exiting from Chef Menu...");
-                    return;
-                default:
-                    System.out.println("You entered a wrong option, please try again");
-                    break;
+
+            try {
+                switch (choice) {
+                    case 1:
+                        employeeService.getRollOutMenu(in, out, sessionToken);
+                        showChooseItemMenu(scanner, in, out);
+                        break;
+                    case 2:
+                        String ratingResponse = employeeService.provideRating(in, out, scanner, sessionToken);
+                        System.out.println(ratingResponse);
+                        break;
+                    case 3:
+                        employeeService.getNotifications(in, out, sessionToken);
+                        break;
+                    case 4:
+                        System.out.println("Exiting from Chef Menu...");
+                        return;
+                    default:
+                        System.out.println("You entered a wrong option, please try again");
+                        break;
+                }
+            }catch (OperationFailedException exception){
+                System.out.println(exception.getMessage());
             }
         }
     }

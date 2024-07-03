@@ -44,7 +44,7 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
             FoodItem foodItem = jdbcTemplate.queryForObject(sql, new Object[]{id}, new FoodItemMapper());
             return foodItem;
         } catch (EmptyResultDataAccessException ex) {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("Food item not found");
         }
     }
 

@@ -2,6 +2,7 @@ package org.example.Handler;
 
 import org.example.Dto.FoodItemDto;
 import org.example.Dto.FoodItemResponseDto;
+import org.example.Exception.OperationFailedException;
 import org.example.Services.ChefService;
 import org.example.Services.RecommendationService;
 
@@ -31,20 +32,24 @@ public class ChefMenuHandler implements MenuHandler{
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
-            switch (choice){
-                case 1:
-                    recommendationService.getRecommendation(in, out, sessionToken);
-                    break;
-                case 2:
-                    String rolloutResponse = chefService.rolloutMenu(in, out, scanner, sessionToken);
-                    System.out.println(rolloutResponse);
-                    break;
-                case 3:
-                    System.out.println("Exiting from Chef Menu...");
-                    return;
-                default:
-                    System.out.println("You entered a wrong option, please try again");
-                    break;
+            try {
+                switch (choice) {
+                    case 1:
+                        recommendationService.getRecommendation(in, out, sessionToken);
+                        break;
+                    case 2:
+                        String rolloutResponse = chefService.rolloutMenu(in, out, scanner, sessionToken);
+                        System.out.println(rolloutResponse);
+                        break;
+                    case 3:
+                        System.out.println("Exiting from Chef Menu...");
+                        return;
+                    default:
+                        System.out.println("You entered a wrong option, please try again");
+                        break;
+                }
+            }catch (OperationFailedException exception){
+                System.out.println(exception.getMessage());
             }
         }
     }

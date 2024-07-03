@@ -33,7 +33,8 @@ public class ResponseHandler {
             }
         }else if (headerParts[0].equals("ERROR")) {
             System.out.println("Error: " + payload);
-            return null;
+            String responsePayload = gson.fromJson(payload, String.class);
+            throw new OperationFailedException(responsePayload);
         } else {
             throw new OperationFailedException("Operation was not completed successfully");
         }
