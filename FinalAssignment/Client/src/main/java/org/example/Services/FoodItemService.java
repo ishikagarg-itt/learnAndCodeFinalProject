@@ -19,13 +19,16 @@ public class FoodItemService {
         String name = scanner.nextLine();
         System.out.print("Enter type: ");
         String type = scanner.nextLine();
-        System.out.println("Enter Availability(true/false): ");
-        Boolean availability_status = scanner.nextBoolean();
+        System.out.print("Enter Availability(true/false): ");
+        String availabilityInput = scanner.nextLine().trim();
+        Boolean availabilityStatus = Boolean.parseBoolean(availabilityInput);
+
+        System.out.println("availability_status" + availabilityStatus);
 
         FoodItemDto foodItem = new FoodItemDto();
         foodItem.setName(name);
         foodItem.setType(type);
-        foodItem.setAvailability_status(availability_status);
+        foodItem.setAvailabilityStatus(availabilityStatus);
 
         Gson gson = new Gson();
         String addPayload = gson.toJson(foodItem);
@@ -46,7 +49,7 @@ public class FoodItemService {
 
         FoodItemDto foodItem = new FoodItemDto();
         foodItem.setName(name);
-        foodItem.setAvailability_status(availability_status);
+        foodItem.setAvailabilityStatus(availability_status);
         foodItem.setId(id);
 
         Gson gson = new Gson();

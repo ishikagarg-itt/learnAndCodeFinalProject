@@ -5,7 +5,7 @@ public class FoodItemDto {
     private int id;
     private String name;
     private String type;
-    private boolean availability_status;
+    private boolean availabilityStatus;
 
     public String getName() {
         return name;
@@ -23,12 +23,12 @@ public class FoodItemDto {
         this.type = type;
     }
 
-    public boolean isAvailability_status() {
-        return availability_status;
+    public boolean isAvailabilityStatus() {
+        return availabilityStatus;
     }
 
-    public void setAvailability_status(boolean availability_status) {
-        this.availability_status = availability_status;
+    public void setAvailabilityStatus(boolean availabilityStatus) {
+        this.availabilityStatus = availabilityStatus;
     }
 
     public int getId() {
@@ -41,10 +41,6 @@ public class FoodItemDto {
 
     @Override
     public String toString() {
-        return "FoodItemDto{" +
-                "name='" + name + '\'' +
-                ", type='" + type + '\'' +
-                ", availability_status=" + availability_status +
-                '}';
+        return "name : " + name + ", availability_status : " + availabilityStatus;
     }
 }

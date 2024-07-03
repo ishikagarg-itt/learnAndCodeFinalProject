@@ -35,7 +35,7 @@ public class AdminMenuHandler implements MenuHandler {
             switch (choice){
                 case 1:
                     FoodItemDto addedFoodItem = foodItemService.add(in, out, scanner, sessionToken);
-                    addedFoodItem.toString();
+                    System.out.println(addedFoodItem.toString());
                     break;
                 case 2:
                     String updateSuccessMessage = foodItemService.update(in, out, scanner, sessionToken);
