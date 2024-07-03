@@ -31,6 +31,9 @@ public class ResponseHandler {
             } catch (JsonSyntaxException e) {
                 throw new OperationFailedException("Failed to parse response payload");
             }
+        }else if (headerParts[0].equals("ERROR")) {
+            System.out.println("Error: " + payload);
+            return null;
         } else {
             throw new OperationFailedException("Operation was not completed successfully");
         }
@@ -48,10 +51,12 @@ public class ResponseHandler {
             } catch (JsonSyntaxException e) {
                 throw new OperationFailedException("Failed to parse response payload");
             }
+        }else if (headerParts[0].equals("ERROR")) {
+            System.out.println("Error: " + payload);
+            return null;
         } else {
             throw new OperationFailedException("Operation was not completed successfully");
         }
-
     }
 
     private static Response readResponse(BufferedReader in) throws IOException, OperationFailedException {

@@ -25,7 +25,6 @@ public class RecommendationService {
         List<FoodItemRating> foodItemRatings = ratingRepository.getFoodItemRatingsForToday();
 
         for (FoodItemRating foodItemRating : foodItemRatings) {
-            System.out.println("foodItemRating:" + foodItemRating.getAverageRating());
             List<String> comments = Arrays.asList(foodItemRating.getComments().split(", "));
 
             double averageSentiment = SentimentAnalysis.analyzeSentiments(comments);
@@ -39,8 +38,6 @@ public class RecommendationService {
         allTopFoodItems.addAll(breakfastItems);
         allTopFoodItems.addAll(lunchItems);
         allTopFoodItems.addAll(dinnerItems);
-
-        System.out.println("allTopFoodItems" + allTopFoodItems.size());
 
         return allTopFoodItems;
     }

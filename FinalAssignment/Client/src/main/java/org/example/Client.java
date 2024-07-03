@@ -52,6 +52,9 @@ public class Client {
                 throw new RuntimeException("You did not start the server for the client to connect");
             }
         }
+        catch(NullPointerException exception){
+            System.out.println("Some error occurred on the server side");
+        }
     }
 
     private static int getUserChoice(Scanner scanner) {

@@ -1,5 +1,7 @@
 package org.example.Handler;
+import com.google.gson.Gson;
 import org.example.Dto.RequestData;
+import org.example.Exception.NotFoundException;
 import org.example.utils.AuthenticationUtils;
 
 import java.io.BufferedReader;
@@ -12,14 +14,17 @@ import java.net.SocketException;
 public class ClientHandler extends Thread {
     private Socket clientSocket;
     private final MessageHandlerFactory messageHandlerFactory;
+
+    private final Gson gson = new Gson();
     public ClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
         messageHandlerFactory = new MessageHandlerFactory();
     }
 
     public void run() {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
+        PrintWriter out = null;
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
             while (true) {
                 String header = in.readLine();
                 System.out.println("Header: " + header);
@@ -27,16 +32,23 @@ public class ClientHandler extends Thread {
                     RequestData requestData = readRequest(header, in);
                     if (!isValidSession(requestData)) {
                         System.out.println("Invalid or missing session token.");
+                        sendError(out, "Invalid or missing session token.\"");
                         continue;
                     }
                     messageHandlerFactory.handleMessage(requestData.getMessageType(), requestData.getPayload(), out);
                 }
             }
+        }catch(NotFoundException e){
+            sendError(out, e.getMessage());
+        }catch(IllegalArgumentException e){
+            sendError(out, e.getMessage());
+        }catch (RuntimeException e){
+            sendError(out, e.getMessage());
         } catch (IOException e) {
             if(e instanceof SocketException){
                 closeClientSocket();
             }
-        } finally {
+        }finally{
            closeClientSocket();
         }
     }
@@ -70,5 +82,15 @@ public class ClientHandler extends Thread {
 
     private boolean isValidSession(RequestData requestData){
         return "LOGIN".equals(requestData.getMessageType()) || (requestData.getSessionToken() != null && AuthenticationUtils.isValidSessionToken(requestData.getSessionToken()));
+    }
+
+    private void sendError(PrintWriter out, String errorMessage) {
+        String errorResponse = errorMessage;
+        String errorPayload = gson.toJson(errorResponse);
+        String errorHeader = "ERROR|" + errorPayload.length();
+        out.println(errorHeader);
+        out.println(errorPayload);
+        out.flush();
+        System.out.println("Sent error to client: " + errorMessage);
     }
 }

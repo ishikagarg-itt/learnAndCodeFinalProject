@@ -77,7 +77,7 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
                 throw new NotFoundException("FoodItem not found");
             }
         } catch (DataAccessException ex) {
-            throw new RuntimeException("Database error occurred", ex);
+            throw new RuntimeException("Database error occurred");
         }
     }
 
@@ -87,7 +87,7 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
             List<FoodItem> foodItems = jdbcTemplate.query(sql, new FoodItemMapper());
             return foodItems;
         } catch (DataAccessException ex) {
-            throw new RuntimeException("Database error occurred", ex);
+            throw new RuntimeException("Database error occurred");
         }
     }
 
