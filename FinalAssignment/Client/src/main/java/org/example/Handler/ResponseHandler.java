@@ -1,39 +1,26 @@
 package org.example.Handler;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
+import org.example.Deserializer.ResponseDeserializer;
+import org.example.Deserializer.ResponseDeserializerFactory;
 import org.example.Dto.Response;
 import org.example.Exception.OperationFailedException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
 
 public class ResponseHandler {
-
-    private static final Gson gson = new Gson();
-
     public static <T> T readResponseObject(BufferedReader in, Class<T> responseType) throws IOException, OperationFailedException {
         Response response = readResponse(in);
         String[] headerParts = response.getHeaderParts();
         String payload = response.getPayload();
+        String format = response.getFormat();
 
         if (headerParts[0].equals("SUCCESS")) {
             System.out.println("Payload " + payload);
-            if (responseType == String.class) {
-                return responseType.cast(payload);
-            }
-
-            try {
-                return gson.fromJson(payload, responseType);
-            } catch (JsonSyntaxException e) {
-                throw new OperationFailedException("Failed to parse response payload");
-            }
-        }else if (headerParts[0].equals("ERROR")) {
-            System.out.println("Error: " + payload);
-            String responsePayload = gson.fromJson(payload, String.class);
+            return deserializeResponseObject(payload, responseType, format);
+        } else if (headerParts[0].equals("ERROR")) {
+            String responsePayload = deserializeResponseObject(payload, String.class, format);
             throw new OperationFailedException(responsePayload);
         } else {
             throw new OperationFailedException("Operation was not completed successfully");
@@ -44,17 +31,13 @@ public class ResponseHandler {
         Response response = readResponse(in);
         String[] headerParts = response.getHeaderParts();
         String payload = response.getPayload();
+        String format = response.getFormat();
 
         if (headerParts[0].equals("SUCCESS")) {
-            Type listType = TypeToken.getParameterized(List.class, responseType).getType();
-            try {
-                return gson.fromJson(payload, listType);
-            } catch (JsonSyntaxException e) {
-                throw new OperationFailedException("Failed to parse response payload");
-            }
-        }else if (headerParts[0].equals("ERROR")) {
-            System.out.println("Error: " + payload);
-            return null;
+            return deserializeResponseList(payload, responseType, format);
+        } else if (headerParts[0].equals("ERROR")) {
+            String responsePayload = deserializeResponseObject(payload, String.class, format);
+            throw new OperationFailedException(responsePayload);
         } else {
             throw new OperationFailedException("Operation was not completed successfully");
         }
@@ -63,15 +46,18 @@ public class ResponseHandler {
     private static Response readResponse(BufferedReader in) throws IOException, OperationFailedException {
         String[] headerParts;
         String payload;
+        String format;
         while (true) {
             headerParts = readHeader(in);
             System.out.println(headerParts[0]);
+            System.out.println("header parts " + headerParts[0]);
             payload = readPayload(headerParts, in);
+            format = readFormat(headerParts);
             if (headerParts != null && !headerParts[0].isEmpty()) {
                 break;
             }
         }
-        return new Response(headerParts, payload);
+        return new Response(headerParts, payload, format);
     }
 
     private static String[] readHeader(BufferedReader in) throws IOException {
@@ -90,5 +76,36 @@ public class ResponseHandler {
             payload = new String(payloadBuffer);
         }
         return payload;
+    }
+
+    private static String readFormat(String[] headerParts) throws IOException {
+        String format = null;
+        if(headerParts.length > 2) {
+            format = headerParts[2];
+        }
+        return format;
+    }
+
+    private static ResponseDeserializer getResponseDeserializer(String format) {
+        return ResponseDeserializerFactory.createDeserializer(format);
+    }
+
+    private static <T> T deserializeResponseObject(String payload, Class<T> responseType, String format) throws OperationFailedException {
+        if (responseType == String.class) {
+            return responseType.cast(payload);
+        }
+        ResponseDeserializer responseDeserializer = getResponseDeserializer(format);
+        if (responseDeserializer != null) {
+            return responseDeserializer.deserializeObject(payload, responseType);
+        }
+        throw new OperationFailedException("Failed to deserialize object");
+    }
+
+    private static <T> List<T> deserializeResponseList(String payload, Class<T> responseType, String format) throws OperationFailedException {
+        ResponseDeserializer responseDeserializer = getResponseDeserializer(format);
+        if (responseDeserializer != null) {
+            return responseDeserializer.deserializeList(payload, responseType);
+        }
+        throw new OperationFailedException("Failed to deserialize list");
     }
 }

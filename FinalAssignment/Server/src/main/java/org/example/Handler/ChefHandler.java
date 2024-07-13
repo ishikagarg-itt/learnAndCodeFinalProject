@@ -1,30 +1,49 @@
 package org.example.Handler;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.example.Controller.ChefController;
+import org.example.Controller.DiscardItemController;
+import org.example.Controller.FoodItemController;
+import org.example.Deserializer.RequestDeserializer;
+import org.example.Entity.DiscardItem;
 import org.example.Entity.FoodItem;
+import org.example.Serializer.ResponseSerializer;
+import org.example.utils.SerealizationUtils;
 
 import java.io.PrintWriter;
 import java.util.List;
 
+import static org.example.Constants.FormatEnum.JSON;
+
 public class ChefHandler implements RoleHandler {
     private final ChefController chefController;
+    private final DiscardItemController discardItemController;
+    private final FoodItemController foodItemController;
     String sessionToken;
 
     public ChefHandler(String sessionToken) {
         chefController = new ChefController();
+        discardItemController = new DiscardItemController();
+        foodItemController = new FoodItemController();
         this.sessionToken = sessionToken;
     }
 
     @Override
-    public void handleCommands(String messageType, String payload, PrintWriter out) {
+    public void handleCommands(String messageType, String payload, String format, PrintWriter out) {
         switch (messageType) {
             case "GET-RECOMMENDATION":
-                handle(out);
+                handle(out, format);
                 break;
             case "ROLL_OUT_MENU":
-                handleRollOutMenu(out, payload);
+                handleRollOutMenu(out, payload, format);
+                break;
+            case "VIEW_DISCARD_ITEMS":
+                handleViewDiscardItems(out, format);
+                break;
+            case "DELETE_ITEM":
+                handleDelete(out, payload, format);
+                break;
+            case "ASK_FEEDBACK":
+                handleAskFeedback(out, format);
                 break;
             case "LOGOUT":
                 break;
@@ -34,27 +53,56 @@ public class ChefHandler implements RoleHandler {
         }
     }
 
-    private void handle(PrintWriter out) {
-        Gson gson = new Gson();
+    private void handle(PrintWriter out, String format) {
         List<FoodItem> foodItems = chefController.getRecommendation();
-
-        String responsePayload = gson.toJson(foodItems);
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(foodItems);
         System.out.println("response payload" + responsePayload);
-        String responseHeader = "SUCCESS|" + responsePayload.length();
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
         out.println(responseHeader);
         out.println(responsePayload);
         System.out.println("Server sent response to client");
     }
 
-    private void handleRollOutMenu(PrintWriter out, String payload) {
-        Gson gson = new Gson();
-        List<Integer> foodItemIds = gson.fromJson(payload, new TypeToken<List<Integer>>() {}.getType());
+    private void handleRollOutMenu(PrintWriter out, String payload, String format) {
+        RequestDeserializer requestDeserializer = SerealizationUtils.getRequestDeserializer(format);
+        List<Integer> foodItemIds = requestDeserializer.deserializeList(payload, Integer.class);
         String rolloutMenuResponse = chefController.rolloutMenu(foodItemIds);
-
-        String responsePayload = gson.toJson(rolloutMenuResponse);
-        String responseHeader = "SUCCESS|" + responsePayload.length();
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(rolloutMenuResponse);
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
         out.println(responseHeader);
         out.println(responsePayload);
         System.out.println("Server sent response to client");
+    }
+
+    private void handleViewDiscardItems(PrintWriter out, String format) {
+        List<DiscardItem> discardItems = discardItemController.getDiscardItems();
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(discardItems);
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
+        System.out.println(responsePayload);
+        out.println(responseHeader);
+        out.println(responsePayload);
+    }
+
+    private void handleDelete(PrintWriter out, String payload, String format) {
+        RequestDeserializer requestDeserializer = SerealizationUtils.getRequestDeserializer(format);
+        int id = requestDeserializer.deserializeObject(payload, Integer.class);
+        foodItemController.delete(id);
+        String responsePayload = "Item deleted successfully";
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
+        out.println(responseHeader);
+        out.println(responsePayload);
+    }
+
+    private void handleAskFeedback(PrintWriter out, String format) {
+        String askFeedBackResponse = chefController.askFeedBack();
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(askFeedBackResponse);
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
+        System.out.println(responsePayload);
+        out.println(responseHeader);
+        out.println(responsePayload);
     }
 }

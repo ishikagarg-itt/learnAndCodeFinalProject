@@ -6,6 +6,9 @@ public class Rating {
     private Long id;
     private String rating;
     private String comment;
+    private String feedback;
+    private String tastePreference;
+    private String recipe;
     private User user;
     private FoodItem foodItem;
     private Date ratingDate;
@@ -56,5 +59,29 @@ public class Rating {
 
     public void setRatingDate(Date ratingDate) {
         this.ratingDate = ratingDate;
+    }
+
+    public String getFeedback() {
+        return feedback;
+    }
+
+    public void setFeedback(String feedback) {
+        this.feedback = feedback;
+    }
+
+    public String getTastePreference() {
+        return tastePreference;
+    }
+
+    public void setTastePreference(String tastePreference) {
+        this.tastePreference = tastePreference;
+    }
+
+    public String getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(String recipe) {
+        this.recipe = recipe;
     }
 }

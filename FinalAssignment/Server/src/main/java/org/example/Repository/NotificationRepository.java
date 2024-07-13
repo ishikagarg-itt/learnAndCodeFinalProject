@@ -2,6 +2,7 @@ package org.example.Repository;
 
 import org.example.Config.DataSourceConfig;
 import org.example.Config.MySqlDataSourceConfig;
+import org.example.Constants.DatabaseConstants;
 import org.example.Entity.FoodItem;
 import org.example.Entity.Notification;
 import org.example.Mapper.FoodItemMapper;
@@ -22,24 +23,18 @@ public class NotificationRepository {
     }
 
     public void save(Notification notification) {
-        String sql = "INSERT INTO notification(message, notification_type_id) VALUES (?, ?)";
-        int rowsAffected = jdbcTemplate.update(sql,
+        int rowsAffected = jdbcTemplate.update(DatabaseConstants.INSERT_NOTIFICATION,
                 notification.getMessage(),
                 notification.getNotificationType().getId());
 
-        if (rowsAffected > 0) {
-            return;
-        } else {
+        if (rowsAffected == 0) {
             throw new RuntimeException("Failed to insert notification into the database");
         }
     }
 
     public List<Notification> getNotificationsForCurrentDate() {
-        String sql = "SELECT n.*,nt.type as type_name FROM notification n "
-                + "LEFT JOIN notification_type nt ON n.notification_type_id = nt.id "
-                + "WHERE DATE(notification_date) = CURDATE()";
         try {
-            List<Notification> notifications = jdbcTemplate.query(sql, new NotificationMapper());
+            List<Notification> notifications = jdbcTemplate.query(DatabaseConstants.SELECT_NOTIFICATIONS_FOR_TODAY, new NotificationMapper());
             return notifications;
         } catch (DataAccessException ex) {
             throw new RuntimeException("Database error occurred", ex);

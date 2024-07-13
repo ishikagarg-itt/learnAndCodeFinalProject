@@ -75,4 +75,35 @@ public class EmployeeService {
 
         return notifications;
     }
+
+    public String provideDiscardItemRating(BufferedReader in, PrintWriter out, Scanner scanner, String sessionToken) throws IOException {
+        System.out.print("Enter food item id you want to rate: ");
+        int foodItemId = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Enter rating(0-5): ");
+        String rating = scanner.nextLine();
+        System.out.print("Enter comment: ");
+        String comment = scanner.nextLine();
+        System.out.println(" What didn’t you like about Food Item?");
+        String feedback = scanner.nextLine();
+        System.out.println("How would you like <Food Item> to taste?");
+        String tastePreference = scanner.nextLine();
+        System.out.println("Share your recipe");
+        String recipe = scanner.nextLine();
+
+        RatingDto ratingDto = new RatingDto();
+        ratingDto.setRating(rating);
+        ratingDto.setComment(comment);
+        ratingDto.setFoodItemId(foodItemId);
+        ratingDto.setFeedback(feedback);
+        ratingDto.setTastePreference(tastePreference);
+        ratingDto.setRecipe(recipe);
+
+        Gson gson = new Gson();
+        String ratingPayload = gson.toJson(ratingDto);
+        RequestHandler.sendRequest(out, "GIVE_DISCARD_ITEM_RATING", ratingPayload, sessionToken);
+
+        String chooseItemResponse = ResponseHandler.readResponseObject(in, String.class);
+        return chooseItemResponse;
+    }
 }

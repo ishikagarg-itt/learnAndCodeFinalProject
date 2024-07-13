@@ -35,7 +35,7 @@ public class ClientHandler extends Thread {
                         //sendError(out, "Invalid or missing session token.\"");
                         continue;
                     }
-                    messageHandlerFactory.handleMessage(requestData.getMessageType(), requestData.getPayload(), out);
+                    messageHandlerFactory.handleMessage(requestData.getMessageType(), requestData.getPayload(), requestData.getFormat(), out);
                 }
             }
         } catch (IOException e) {
@@ -53,9 +53,10 @@ public class ClientHandler extends Thread {
         String messageType = headerParts[0];
         int payloadLength = Integer.parseInt(headerParts[1]);
         String payload = readPayload(in, payloadLength);
-        String sessionToken = headerParts.length > 2 ? headerParts[2] : null;
+        String format = headerParts[2];
+        String sessionToken = headerParts.length > 3 ? headerParts[3] : null;
 
-        return new RequestData(messageType, payloadLength, payload, sessionToken);
+        return new RequestData(messageType, payloadLength, payload, format, sessionToken);
     }
 
     private String readPayload(BufferedReader in, int payloadLength) throws IOException {

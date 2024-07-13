@@ -1,41 +1,53 @@
 package org.example.Handler;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import org.example.Controller.DiscardItemController;
 import org.example.Controller.EmployeeController;
+import org.example.Deserializer.RequestDeserializer;
 import org.example.Dto.EmployeeMenuDto;
 import org.example.Dto.RatingDto;
+import org.example.Entity.DiscardItem;
 import org.example.Entity.Notification;
-import org.example.Entity.Rating;
+import org.example.Serializer.ResponseSerializer;
 import org.example.utils.AuthenticationUtils;
+import org.example.utils.SerealizationUtils;
 
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.example.Constants.FormatEnum.JSON;
+
 public class EmployeeHandler implements RoleHandler {
     private EmployeeController employeeController;
+    private final DiscardItemController discardItemController;
     String sessionToken;
 
     public EmployeeHandler(String sessionToken){
         employeeController = new EmployeeController();
+        discardItemController = new DiscardItemController();
         this.sessionToken = sessionToken;
     }
 
     @Override
-    public void handleCommands(String messageType, String payload, PrintWriter out) {
+    public void handleCommands(String messageType, String payload, String format, PrintWriter out) {
         switch (messageType){
             case "GET_ROLL_OUT_MENU":
-                handleGetRollOutMenu(out);
+                handleGetRollOutMenu(out, format);
                 break;
             case "CHOOSE_ITEMS":
-                handleChooseItems(out, payload);
+                handleChooseItems(out, payload, format, AuthenticationUtils.getSession(sessionToken));
                 break;
             case "GIVE_RATING":
-                handleRating(out, payload, AuthenticationUtils.getSession(sessionToken));
+                handleRating(out, payload, format, AuthenticationUtils.getSession(sessionToken));
                 break;
             case "VIEW_NOTIFICATIONS":
-                handleViewNotifications(out);
+                handleViewNotifications(out, format);
+                break;
+            case "VIEW_DISCARD_ITEMS":
+                handleViewDiscardItems(out, format);
+                break;
+            case "GIVE_DISCARD_ITEM_RATING":
+                handleDiscardItemRating(out, payload, format, AuthenticationUtils.getSession(sessionToken));
                 break;
             case "LOGOUT":
                 break;
@@ -44,54 +56,74 @@ public class EmployeeHandler implements RoleHandler {
         }
     }
 
-    private void handleGetRollOutMenu(PrintWriter out) {
-        Gson gson = new Gson();
+    private void handleGetRollOutMenu(PrintWriter out, String format) {
         List<EmployeeMenuDto> foodItems = employeeController.getRollOutMenu();
-
-        String responsePayload = gson.toJson(foodItems);
-        String responseHeader = "SUCCESS|" + responsePayload.length();
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(foodItems);
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
         out.println(responseHeader);
         out.println(responsePayload);
         System.out.println("Server sent response to client");
     }
 
-    private void handleChooseItems(PrintWriter out, String payload) {
-        Gson gson = new Gson();
-        List<Integer> chosenFoodItemIds = gson.fromJson(payload, new TypeToken<List<Integer>>() {}.getType());
+    private void handleChooseItems(PrintWriter out, String payload, String format, String username) {
+        RequestDeserializer requestDeserializer = SerealizationUtils.getRequestDeserializer(format);
+        List<Integer> chosenFoodItemIds = requestDeserializer.deserializeList(payload, Integer.class);
         chosenFoodItemIds = chosenFoodItemIds
                 .stream()
                 .distinct()
                 .collect(Collectors.toList());
-        String chooseItemResponse = employeeController.chooseItems(chosenFoodItemIds);
-
-        String responsePayload = gson.toJson(chooseItemResponse);
-        String responseHeader = "SUCCESS|" + responsePayload.length();
+        String chooseItemResponse = employeeController.chooseItems(chosenFoodItemIds, username);
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(chooseItemResponse);
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
         out.println(responseHeader);
         out.println(responsePayload);
         System.out.println("Server sent response to client");
     }
 
-    private void handleRating(PrintWriter out, String payload, String username){
-        Gson gson = new Gson();
-        RatingDto rating = gson.fromJson(payload, RatingDto.class);
+    private void handleRating(PrintWriter out, String payload, String format, String username){
+        RequestDeserializer requestDeserializer = SerealizationUtils.getRequestDeserializer(format);
+        RatingDto rating = requestDeserializer.deserializeObject(payload, RatingDto.class);
         String ratingResponse = employeeController.provideRating(rating, username);
-
-        String responsePayload = gson.toJson(ratingResponse);
-        String responseHeader = "SUCCESS|" + responsePayload.length();
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(ratingResponse);
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
         out.println(responseHeader);
         out.println(responsePayload);
         System.out.println("Server sent response to client");
     }
 
-    private void handleViewNotifications(PrintWriter out){
-        Gson gson = new Gson();
+    private void handleViewNotifications(PrintWriter out, String format){
         List<Notification> notifications = employeeController.viewNotifications();
-
-        String responsePayload = gson.toJson(notifications);
-        String responseHeader = "SUCCESS|" + responsePayload.length();
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(notifications);
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
         out.println(responseHeader);
         out.println(responsePayload);
         System.out.println("Server sent response to client");
+    }
+
+    private void handleDiscardItemRating(PrintWriter out, String payload, String format, String username){
+        RequestDeserializer requestDeserializer = SerealizationUtils.getRequestDeserializer(format);
+        RatingDto rating = requestDeserializer.deserializeObject(payload, RatingDto.class);
+        String ratingResponse = employeeController.provideDiscardItemRating(rating, username);
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(ratingResponse);
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
+        out.println(responseHeader);
+        out.println(responsePayload);
+        System.out.println("Server sent response to client");
+    }
+
+    private void handleViewDiscardItems(PrintWriter out, String format) {
+        List<DiscardItem> discardItems = discardItemController.getDiscardItems();
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(discardItems);
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
+        System.out.println(responsePayload);
+        out.println(responseHeader);
+        out.println(responsePayload);
     }
 
 }

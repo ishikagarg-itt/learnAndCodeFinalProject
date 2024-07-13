@@ -32,7 +32,6 @@ public class VotedItemMapper implements RowMapper<VotedItem> {
         foodItem.setId(rs.getInt("food_item_id"));
         votedItem.setFoodItem(foodItem);
         votedItem.setVotingDate(rs.getDate("voting_date"));
-        votedItem.setTotalVotes(rs.getInt("total_votes"));
         return votedItem;
     }
 }

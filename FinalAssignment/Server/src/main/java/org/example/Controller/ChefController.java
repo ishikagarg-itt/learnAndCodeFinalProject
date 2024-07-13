@@ -23,4 +23,8 @@ public class ChefController {
     public String rolloutMenu(List<Integer> foodItemIds){
         return chefService.rollOutMenu(foodItemIds);
     }
+
+    public String askFeedBack(){
+        return chefService.askFeedback();
+    }
 }

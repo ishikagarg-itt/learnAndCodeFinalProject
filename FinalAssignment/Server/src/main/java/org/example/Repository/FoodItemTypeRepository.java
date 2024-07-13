@@ -2,6 +2,7 @@ package org.example.Repository;
 
 import org.example.Config.DataSourceConfig;
 import org.example.Config.MySqlDataSourceConfig;
+import org.example.Constants.DatabaseConstants;
 import org.example.Entity.FoodItemType;
 import org.example.Entity.User;
 import org.example.Mapper.FoodItemMapper;
@@ -22,9 +23,7 @@ public class FoodItemTypeRepository{
     }
 
     public Optional<Integer> getByName(String type){
-        String sql = "SELECT id from food_item_type " + "WHERE type = ?";
-
-        int id = jdbcTemplate.queryForObject(sql, new Object[]{type}, new FoodItemTypeMapper());
+        int id = jdbcTemplate.queryForObject(DatabaseConstants.SELECT_FOOD_TYPE_BY_NAME, new Object[]{type}, new FoodItemTypeMapper());
         return Optional.ofNullable(id);
     }
 }

@@ -17,20 +17,18 @@ public class MessageHandlerFactory {
         loginHandler = new LoginHandler();
     }
 
-    public void handleMessage(String messageType, String payload, PrintWriter out) {
+    public void handleMessage(String messageType, String payload, String format, PrintWriter out) {
         try {
             if (messageType.equals("LOGIN")) {
-                sessionToken = loginHandler.handle(out, payload);
+                sessionToken = loginHandler.handle(out, payload, format);
             } else {
                 if (sessionToken == null) {
                     throw new RuntimeException("No session token. User must log in first.");
                 }
                 RoleHandler roleHandler = RoleHandlerFactory.createHandler(AuthenticationUtils.getRoleFromToken(sessionToken), sessionToken);
-                roleHandler.handleCommands(messageType, payload, out);
+                roleHandler.handleCommands(messageType, payload, format, out);
             }
-        }catch(NotFoundException e) {
-            sendError(out, e.getMessage());
-        }catch(IllegalStateException e){
+        }catch(NotFoundException | IllegalStateException e) {
             sendError(out, e.getMessage());
         }catch (RuntimeException e){
             sendError(out, e.getMessage());

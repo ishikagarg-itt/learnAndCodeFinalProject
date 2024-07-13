@@ -2,16 +2,15 @@ package org.example.Handler;
 
 import com.google.gson.Gson;
 import org.example.Controller.AuthenticationController;
+import org.example.Deserializer.RequestDeserializer;
 import org.example.Dto.LoginRequestDto;
 import org.example.Dto.LoginResponseDto;
-import org.example.Entity.User;
-import org.example.Exception.NotFoundException;
-import org.example.Repository.UserRepository;
-import org.example.Services.AuthenticationService;
-import org.example.utils.AuthenticationUtils;
+import org.example.Serializer.ResponseSerializer;
+import org.example.utils.SerealizationUtils;
 
 import java.io.PrintWriter;
-import java.util.Optional;
+
+import static org.example.Constants.FormatEnum.JSON;
 
 public class LoginHandler {
     private final Gson gson;
@@ -22,11 +21,13 @@ public class LoginHandler {
         this.gson = new Gson();
     }
 
-    public String handle(PrintWriter out, String payload) {
-        LoginRequestDto loginRequest = gson.fromJson(payload, LoginRequestDto.class);
+    public String handle(PrintWriter out, String payload, String format) {
+        RequestDeserializer resquestDeserializer = SerealizationUtils.getRequestDeserializer(format);
+        LoginRequestDto loginRequest = resquestDeserializer.deserializeObject(payload, LoginRequestDto.class);
         LoginResponseDto loginResponse = authenticationController.login(loginRequest);
-        String responsePayload = gson.toJson(loginResponse);
-        String responseHeader = "SUCCESS|" + responsePayload.length();
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(loginResponse);
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
         out.println(responseHeader);
         out.println(responsePayload);
         System.out.println("Server sent session token to client");

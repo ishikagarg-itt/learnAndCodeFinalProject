@@ -2,6 +2,7 @@ package org.example.Repository;
 
 import org.example.Config.DataSourceConfig;
 import org.example.Config.MySqlDataSourceConfig;
+import org.example.Constants.DatabaseConstants;
 import org.example.Mapper.FoodItemTypeMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -17,9 +18,7 @@ public class NotificationTypeRepository {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
     public Optional<Integer> getByName(String type){
-        String sql = "SELECT id from notification_type " + "WHERE type = ?";
-
-        int id = jdbcTemplate.queryForObject(sql, new Object[]{type}, new FoodItemTypeMapper());
+        int id = jdbcTemplate.queryForObject(DatabaseConstants.SELECT_NOTIFICATION_TYPE_BY_NAME, new Object[]{type}, new FoodItemTypeMapper());
         return Optional.ofNullable(id);
     }
 }

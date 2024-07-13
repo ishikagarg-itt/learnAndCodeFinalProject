@@ -2,6 +2,7 @@ package org.example.Repository;
 
 import org.example.Config.DataSourceConfig;
 import org.example.Config.MySqlDataSourceConfig;
+import org.example.Constants.DatabaseConstants;
 import org.example.Entity.FoodItem;
 import org.example.Exception.NotFoundException;
 import org.example.Mapper.FoodItemMapper;
@@ -24,8 +25,7 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
 
     @Override
     public FoodItem save(FoodItem foodItem) {
-        String sql = "INSERT INTO food_item (name, availability_status, type_id) VALUES (?, ?, ?)";
-        int rowsAffected = jdbcTemplate.update(sql,
+        int rowsAffected = jdbcTemplate.update(DatabaseConstants.INSERT_FOOD_ITEM,
                 foodItem.getName(),
                 foodItem.isAvailabilityStatus(),
                 foodItem.getType().getId());
@@ -39,9 +39,8 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
 
     @Override
     public FoodItem getById(Integer id) {
-        String sql = "SELECT fi.*,t.type as type_name FROM food_item fi " + "LEFT JOIN food_item_type t ON fi.type_id = t.id " + "WHERE fi.id = ?";
         try {
-            FoodItem foodItem = jdbcTemplate.queryForObject(sql, new Object[]{id}, new FoodItemMapper());
+            FoodItem foodItem = jdbcTemplate.queryForObject(DatabaseConstants.SELECT_FOOD_ITEM_BY_ID, new Object[]{id}, new FoodItemMapper());
             return foodItem;
         } catch (EmptyResultDataAccessException ex) {
             throw new NotFoundException("Food item not found");
@@ -50,9 +49,8 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
 
     @Override
     public FoodItem update(Integer id, FoodItem foodItem) {
-        String sql = "UPDATE food_item SET name = ?, availability_status = ? WHERE Id = ?";
         try {
-            int rowsAffected = jdbcTemplate.update(sql,
+            int rowsAffected = jdbcTemplate.update(DatabaseConstants.UPDATE_FOOD_ITEM,
                     foodItem.getName(),
                     foodItem.isAvailabilityStatus(),
                     id);
@@ -69,9 +67,8 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
 
     @Override
     public void delete(Integer id) {
-        String sql = "DELETE FROM food_item WHERE id = ?";
         try {
-            int rowsAffected = jdbcTemplate.update(sql, id);
+            int rowsAffected = jdbcTemplate.update(DatabaseConstants.DELETE_FOOD_ITEM, id);
 
             if (rowsAffected == 0) {
                 throw new NotFoundException("FoodItem not found");
@@ -82,31 +79,18 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
     }
 
     public List<FoodItem> getAll() {
-        String sql = "SELECT fi.*,t.type as type_name FROM food_item fi " + "LEFT JOIN food_item_type t ON fi.type_id = t.id ";
         try {
-            List<FoodItem> foodItems = jdbcTemplate.query(sql, new FoodItemMapper());
+            List<FoodItem> foodItems = jdbcTemplate.query(DatabaseConstants.SELECT_ALL_FOOD_ITEMS, new FoodItemMapper());
             return foodItems;
         } catch (DataAccessException ex) {
             throw new RuntimeException("Database error occurred");
         }
     }
 
-    public List<FoodItem> getTopFoodItems(String foodType){
-        String sql = "SELECT fi.*, fit.type as type_name " +
-                "FROM item_audit ia " +
-                "JOIN food_item fi ON ia.food_item_id = fi.id " +
-                "JOIN food_item_type fit ON fi.type_id = fit.id " +
-                "WHERE fit.type = ? " +
-                "ORDER BY (ia.average_rating + ia.average_sentiment) / 2 DESC " +
-                "LIMIT 5";
-
-        return jdbcTemplate.query(sql, new Object[]{foodType}, new FoodItemMapper());
-    }
-
     public Boolean isExist(int id) {
-        String sql = "SELECT COUNT(*) FROM food_item WHERE id = ?";
+
         try {
-            Integer count = jdbcTemplate.queryForObject(sql, new Object[]{id}, Integer.class);
+            Integer count = jdbcTemplate.queryForObject(DatabaseConstants.COUNT_FOOD_ITEM_BY_ID, new Object[]{id}, Integer.class);
             return count != null && count > 0;
         } catch (DataAccessException ex) {
             throw new RuntimeException("Database error occurred", ex);

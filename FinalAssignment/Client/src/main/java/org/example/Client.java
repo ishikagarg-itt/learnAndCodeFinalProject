@@ -45,6 +45,7 @@ public class Client {
                             return;
                         default:
                             System.out.println("Invalid choice. Please try again.");
+                            break;
 
                     }
                 }catch (OperationFailedException exception){

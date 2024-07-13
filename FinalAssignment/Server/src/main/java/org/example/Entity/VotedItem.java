@@ -6,7 +6,8 @@ public class VotedItem {
     private int id;
     private FoodItem foodItem;
     private Date votingDate;
-    private int totalVotes;
+
+    private User user;
 
     public int getId() {
         return id;
@@ -32,11 +33,11 @@ public class VotedItem {
         this.votingDate = votingDate;
     }
 
-    public int getTotalVotes() {
-        return totalVotes;
+    public User getUser() {
+        return user;
     }
 
-    public void setTotalVotes(int totalVotes) {
-        this.totalVotes = totalVotes;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

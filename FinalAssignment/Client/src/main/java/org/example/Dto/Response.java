@@ -4,9 +4,12 @@ public class Response {
     private final String[] headerParts;
     private final String payload;
 
-    public Response(String[] headerParts, String payload) {
+    private final String format;
+
+    public Response(String[] headerParts, String payload, String format) {
         this.headerParts = headerParts;
         this.payload = payload;
+        this.format = format;
     }
 
     public String[] getHeaderParts() {
@@ -15,5 +18,9 @@ public class Response {
 
     public String getPayload() {
         return payload;
+    }
+
+    public String getFormat() {
+        return format;
     }
 }

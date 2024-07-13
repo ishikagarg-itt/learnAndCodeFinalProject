@@ -3,6 +3,7 @@ package org.example.Services;
 import org.example.Dto.FoodItemRating;
 import org.example.Entity.FoodItem;
 import org.example.Repository.FoodItemRepository;
+import org.example.Repository.ItemAuditRepository;
 import org.example.Repository.RatingRepository;
 import org.example.utils.SentimentAnalysis;
 
@@ -15,16 +16,18 @@ public class RecommendationService {
     private final RatingRepository ratingRepository;
 
     private final FoodItemRepository foodItemRepository;
+    private final ItemAuditRepository itemAuditRepository;
 
     public RecommendationService(){
         ratingRepository = new RatingRepository();
         foodItemRepository = new FoodItemRepository();
+        itemAuditRepository = new ItemAuditRepository();
     }
     public List<FoodItem> getRecommendation(){
         List<FoodItem> allTopFoodItems = new ArrayList<>();
-        List<FoodItem> breakfastItems = foodItemRepository.getTopFoodItems("Breakfast");
-        List<FoodItem> lunchItems = foodItemRepository.getTopFoodItems("Lunch");
-        List<FoodItem> dinnerItems = foodItemRepository.getTopFoodItems("Dinner");
+        List<FoodItem> breakfastItems = itemAuditRepository.getTopFoodItems("Breakfast");
+        List<FoodItem> lunchItems = itemAuditRepository.getTopFoodItems("Lunch");
+        List<FoodItem> dinnerItems = itemAuditRepository.getTopFoodItems("Dinner");
 
         allTopFoodItems.addAll(breakfastItems);
         allTopFoodItems.addAll(lunchItems);

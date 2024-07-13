@@ -20,8 +20,8 @@ public class EmployeeController {
         return foodItems;
     }
 
-    public String chooseItems(List<Integer> foodItemIds){
-        return employeeService.chooseItems(foodItemIds);
+    public String chooseItems(List<Integer> foodItemIds, String username){
+        return employeeService.chooseItems(foodItemIds, username);
     }
 
     public String provideRating(RatingDto rating, String username){
@@ -30,5 +30,9 @@ public class EmployeeController {
 
     public List<Notification> viewNotifications(){
         return employeeService.viewNotifications();
+    }
+
+    public String provideDiscardItemRating(RatingDto rating, String username){
+        return employeeService.provideDiscardItemRating(rating, username);
     }
 }

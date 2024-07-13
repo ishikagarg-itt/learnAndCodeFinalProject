@@ -4,6 +4,7 @@ import org.example.Dto.EmployeeMenuDto;
 import org.example.Dto.FoodItemResponseDto;
 import org.example.Dto.VotedItemDto;
 import org.example.Exception.OperationFailedException;
+import org.example.Services.DiscardItemService;
 import org.example.Services.EmployeeService;
 
 import java.io.BufferedReader;
@@ -17,10 +18,12 @@ public class EmployeeMenuHandler implements MenuHandler{
 
     private final String sessionToken;
     private final EmployeeService employeeService;
+    private final DiscardItemService discardItemService;
 
     public EmployeeMenuHandler(String sessionToken){
         this.sessionToken = sessionToken;
         employeeService = new EmployeeService();
+        discardItemService = new DiscardItemService();
     }
     @Override
     public void showMenu(Scanner scanner, BufferedReader in, PrintWriter out) throws IOException {
@@ -28,7 +31,9 @@ public class EmployeeMenuHandler implements MenuHandler{
             System.out.println("1. Choose food Item");
             System.out.println("2. Give feedback");
             System.out.println("3. View Notifications");
-            System.out.println("4. Logout");
+            System.out.println("4. Give Feedback for Discard Item");
+            System.out.println("5. Update Profile");
+            System.out.println("6. Logout");
             System.out.print("Choose an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -47,6 +52,11 @@ public class EmployeeMenuHandler implements MenuHandler{
                         employeeService.getNotifications(in, out, sessionToken);
                         break;
                     case 4:
+                        discardItemService.getDiscardItems(in, out, sessionToken);
+                        String discardItemRatingResponse = employeeService.provideDiscardItemRating(in, out, scanner, sessionToken);
+                        System.out.println(discardItemRatingResponse);
+                        break;
+                    case 6:
                         System.out.println("Exiting from Chef Menu...");
                         return;
                     default:

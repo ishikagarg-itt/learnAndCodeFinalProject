@@ -2,6 +2,7 @@ package org.example.Repository;
 
 import org.example.Config.DataSourceConfig;
 import org.example.Config.MySqlDataSourceConfig;
+import org.example.Constants.DatabaseConstants;
 import org.example.Dto.FoodItemRating;
 import org.example.Entity.Rating;
 import org.example.Exception.NotFoundException;
@@ -23,37 +24,31 @@ public class RatingRepository {
     }
 
     public void save(Rating rating, String username){
-        String sql = "INSERT INTO rating (rating, comment, food_item_id, username) VALUES (?, ?, ?, ?)";
-        int rowsAffected = jdbcTemplate.update(sql,
+        int rowsAffected = jdbcTemplate.update(DatabaseConstants.INSERT_RATING,
                 rating.getRating(),
                 rating.getComment(),
                 rating.getFoodItem().getId(),
-                username);
+                username,
+                rating.getFeedback(),
+                rating.getTastePreference(),
+                rating.getRecipe());
 
         if (rowsAffected == 0) {
-            throw new RuntimeException("Failed to insert food item into the database");
+            throw new RuntimeException("Failed to insert rating into the database");
         }
     }
 
     public List<FoodItemRating> getFoodItemRatingsForToday(int foodItemId){
-        String sql = "SELECT FoodItemId, AVG(Rating) AS average_rating, GROUP_CONCAT(Comment SEPARATOR ', ') AS comments " +
-                "FROM feedbacks " +
-                "WHERE Date = CURDATE() AND FoodItemId = ? " +
-                "GROUP BY FoodItemId";
-
-        List<FoodItemRating> foodItemRatings = jdbcTemplate.query(sql, new Object[]{foodItemId}, new RatingMapper());
+        List<FoodItemRating> foodItemRatings = jdbcTemplate.query(DatabaseConstants.SELECT_RATINGS_FOR_TODAY, new Object[]{foodItemId}, new RatingMapper());
         return foodItemRatings;
     }
 
     public void updateItemAudit(FoodItemRating foodItemRating, double averageSentiment){
-        String sql = "UPDATE item_audit SET average_rating = ?, average_sentiment = ?" + "WHERE food_item_id = ?";
         try {
-            int rowsAffected = jdbcTemplate.update(sql,
+            int rowsAffected = jdbcTemplate.update(DatabaseConstants.UPDATE_ITEM_AUDIT,
                     foodItemRating.getAverageRating(),
                     averageSentiment,
                     foodItemRating.getFoodItemId());
-
-            System.out.println("rows affected:" + rowsAffected);
 
             if (rowsAffected == 0) {
                 throw new NotFoundException("FoodItem not found");
@@ -64,9 +59,7 @@ public class RatingRepository {
     }
 
     public boolean hasUserRatedToday(String username, int foodItemId) {
-        String sql = "SELECT COUNT(*) FROM rating WHERE username = ? AND food_item_id = ? AND DATE(rating_date) = CURDATE()";
-
-        Integer count = jdbcTemplate.queryForObject(sql, new Object[]{username, foodItemId}, Integer.class);
+        Integer count = jdbcTemplate.queryForObject(DatabaseConstants.COUNT_RATING_FOR_FOOD_ITEM_BY_USER_TODAY, new Object[]{username, foodItemId}, Integer.class);
         return count != null && count > 0;
     }
 }

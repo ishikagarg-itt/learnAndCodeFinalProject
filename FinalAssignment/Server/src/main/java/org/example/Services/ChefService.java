@@ -2,9 +2,11 @@ package org.example.Services;
 
 import org.example.Entity.FoodItem;
 import org.example.Entity.Notification;
+import org.example.Entity.RolloutMenuItem;
 import org.example.Entity.VotedItem;
 import org.example.Exception.NotFoundException;
 import org.example.Repository.FoodItemRepository;
+import org.example.Repository.RolloutMenuItemRepository;
 import org.example.Repository.VotedItemRepository;
 
 import java.util.Calendar;
@@ -14,14 +16,14 @@ import java.util.List;
 public class ChefService {
     private final RecommendationService recommendationService;
     private final NotificationService notificationService;
-    private final VotedItemRepository votedItemRepository;
     private final FoodItemRepository foodItemRepository;
+    private final RolloutMenuItemRepository rolloutMenuRepository;
 
     public ChefService(){
         recommendationService = new RecommendationService();
-        votedItemRepository = new VotedItemRepository();
         foodItemRepository = new FoodItemRepository();
         notificationService = new NotificationService();
+        rolloutMenuRepository = new RolloutMenuItemRepository();
     }
     public List<FoodItem> getRecommendation(){
         return recommendationService.getRecommendation();
@@ -36,8 +38,8 @@ public class ChefService {
                 throw new NotFoundException("Food item does not exist.");
             }
 
-            VotedItem votedItem = buildVotedItem(foodItemId);
-            votedItemRepository.save(votedItem);
+            RolloutMenuItem rolloutMenuItem = buildRolloutMenuItem(foodItemId);
+            rolloutMenuRepository.save(rolloutMenuItem);
         }
 
         Notification notification = notificationService.buildNotification("Roll_Out", "Chef has rolled out the menu, please choose from the menu");
@@ -46,13 +48,19 @@ public class ChefService {
         return "Menu rolled out successfully and notification sent to the employees";
     }
 
-    private VotedItem buildVotedItem(int foodItemId){
-        VotedItem votedItem = new VotedItem();
-        votedItem.setTotalVotes(0);
-        votedItem.setVotingDate(new Date(Calendar.getInstance().getTimeInMillis()));
+    public String askFeedback(){
+        String message = "We are trying to improve your experience. Please provide your feedback and help us.";
+        Notification notification = notificationService.buildNotification("Discard_Item", "");
+        notificationService.sendNotification(notification);
+        return "You have successfully sent notification for asking the feedback";
+    }
+
+    private RolloutMenuItem buildRolloutMenuItem(int foodItemId){
+        RolloutMenuItem rolloutMenuItem = new RolloutMenuItem();
+        rolloutMenuItem.setRolloutDate(new Date(Calendar.getInstance().getTimeInMillis()));
         FoodItem foodItem = new FoodItem();
         foodItem.setId(foodItemId);
-        votedItem.setFoodItem(foodItem);
-        return votedItem;
+        rolloutMenuItem.setFoodItem(foodItem);
+        return rolloutMenuItem;
     }
 }
