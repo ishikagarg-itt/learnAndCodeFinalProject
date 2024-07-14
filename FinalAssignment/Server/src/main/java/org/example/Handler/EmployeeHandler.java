@@ -4,6 +4,7 @@ import org.example.Controller.DiscardItemController;
 import org.example.Controller.EmployeeController;
 import org.example.Deserializer.RequestDeserializer;
 import org.example.Dto.EmployeeMenuDto;
+import org.example.Dto.ProfileDto;
 import org.example.Dto.RatingDto;
 import org.example.Entity.DiscardItem;
 import org.example.Entity.Notification;
@@ -32,7 +33,7 @@ public class EmployeeHandler implements RoleHandler {
     public void handleCommands(String messageType, String payload, String format, PrintWriter out) {
         switch (messageType){
             case "GET_ROLL_OUT_MENU":
-                handleGetRollOutMenu(out, format);
+                handleGetRollOutMenu(out, format, AuthenticationUtils.getSession(sessionToken));
                 break;
             case "CHOOSE_ITEMS":
                 handleChooseItems(out, payload, format, AuthenticationUtils.getSession(sessionToken));
@@ -49,6 +50,9 @@ public class EmployeeHandler implements RoleHandler {
             case "GIVE_DISCARD_ITEM_RATING":
                 handleDiscardItemRating(out, payload, format, AuthenticationUtils.getSession(sessionToken));
                 break;
+            case "UPDATE_PROFILE":
+                handleUpdateProfile(out, payload, format, AuthenticationUtils.getSession(sessionToken));
+                break;
             case "LOGOUT":
                 break;
             default:
@@ -56,8 +60,8 @@ public class EmployeeHandler implements RoleHandler {
         }
     }
 
-    private void handleGetRollOutMenu(PrintWriter out, String format) {
-        List<EmployeeMenuDto> foodItems = employeeController.getRollOutMenu();
+    private void handleGetRollOutMenu(PrintWriter out, String format, String username) {
+        List<EmployeeMenuDto> foodItems = employeeController.getRollOutMenu(username);
         ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
         String responsePayload = responseSerializer.serialize(foodItems);
         String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
@@ -124,6 +128,18 @@ public class EmployeeHandler implements RoleHandler {
         System.out.println(responsePayload);
         out.println(responseHeader);
         out.println(responsePayload);
+    }
+
+    private void handleUpdateProfile(PrintWriter out, String payload, String format, String username) {
+        RequestDeserializer requestDeserializer = SerealizationUtils.getRequestDeserializer(format);
+        ProfileDto profile = requestDeserializer.deserializeObject(payload, ProfileDto.class);
+        String updateProfileResponse = employeeController.updateProfile(profile, username);
+        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
+        String responsePayload = responseSerializer.serialize(updateProfileResponse);
+        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
+        out.println(responseHeader);
+        out.println(responsePayload);
+        System.out.println("Server sent response to client");
     }
 
 }

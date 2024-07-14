@@ -4,22 +4,22 @@ import org.example.Config.DataSourceConfig;
 import org.example.Config.MySqlDataSourceConfig;
 import org.example.Constants.DatabaseConstants;
 import org.example.Mapper.FoodItemTypeMapper;
-import org.example.Mapper.NotificationTypeMapper;
+import org.example.Mapper.SpiceLevelMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.util.Optional;
 
-public class NotificationTypeRepository {
+public class SpiceLevelRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public NotificationTypeRepository() {
+    public SpiceLevelRepository() {
         DataSourceConfig dataSourceConfig = new MySqlDataSourceConfig();
         DataSource dataSource = dataSourceConfig.getDataSource();
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
-    public Optional<Integer> getByName(String type){
-        int id = jdbcTemplate.queryForObject(DatabaseConstants.SELECT_NOTIFICATION_TYPE_BY_NAME, new Object[]{type}, new NotificationTypeMapper());
+    public Optional<Integer> getByName(String spiceLevel){
+        int id = jdbcTemplate.queryForObject(DatabaseConstants.SELECT_SPICE_LEVEL_BY_NAME, new Object[]{spiceLevel}, new SpiceLevelMapper());
         return Optional.ofNullable(id);
     }
 }

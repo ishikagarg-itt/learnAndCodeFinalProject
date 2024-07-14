@@ -52,4 +52,9 @@ public class DatabaseConstants {
             "FROM item_audit ia " +
             "JOIN food_item fi ON ia.food_item_id = fi.id " +
             "WHERE (ia.average_rating + ia.average_sentiment) / 2 < 2";
+    public static final String SELECT_MEAL_PREFERENCE_TYPE_BY_NAME = "SELECT id from meal_preference " + "WHERE preference = ?";
+    public static final String SELECT_SPICE_LEVEL_BY_NAME = "SELECT id from spice_level " + "WHERE spice_level = ?";
+    public static final String SELECT_REGION_BY_NAME = "SELECT id from region " + "WHERE region = ?";
+    public static final String INSERT_PROFILE = "INSERT INTO profile (meal_preference_id, spice_level_id, region_id, sweet_tooth, username) " +
+            "VALUES (?, ?, ?, ?, ?)";
 }

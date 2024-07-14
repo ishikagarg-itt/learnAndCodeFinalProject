@@ -56,6 +56,9 @@ public class EmployeeMenuHandler implements MenuHandler{
                         String discardItemRatingResponse = employeeService.provideDiscardItemRating(in, out, scanner, sessionToken);
                         System.out.println(discardItemRatingResponse);
                         break;
+                    case 5:
+                        String updateProfileResponse = employeeService.updateProfile(in, out, scanner, sessionToken);
+                        System.out.println(updateProfileResponse);
                     case 6:
                         System.out.println("Exiting from Chef Menu...");
                         return;

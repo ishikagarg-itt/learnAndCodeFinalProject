@@ -1,6 +1,7 @@
 package org.example.Controller;
 
 import org.example.Dto.EmployeeMenuDto;
+import org.example.Dto.ProfileDto;
 import org.example.Dto.RatingDto;
 import org.example.Entity.Notification;
 import org.example.Entity.Rating;
@@ -15,8 +16,8 @@ public class EmployeeController {
         employeeService = new EmployeeService();
     }
 
-    public List<EmployeeMenuDto> getRollOutMenu(){
-        List<EmployeeMenuDto> foodItems = employeeService.getRollOutMenu();
+    public List<EmployeeMenuDto> getRollOutMenu(String username){
+        List<EmployeeMenuDto> foodItems = employeeService.getRollOutMenu(username);
         return foodItems;
     }
 
@@ -34,5 +35,9 @@ public class EmployeeController {
 
     public String provideDiscardItemRating(RatingDto rating, String username){
         return employeeService.provideDiscardItemRating(rating, username);
+    }
+
+    public String updateProfile(ProfileDto profileDto, String username){
+        return employeeService.updateProfile(profileDto, username);
     }
 }

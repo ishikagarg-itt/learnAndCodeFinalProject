@@ -4,6 +4,7 @@ import org.example.Config.DataSourceConfig;
 import org.example.Config.MySqlDataSourceConfig;
 import org.example.Constants.DatabaseConstants;
 import org.example.Dto.EmployeeMenuDto;
+import org.example.Entity.Profile;
 import org.example.Entity.RolloutMenuItem;
 import org.example.Mapper.EmployeeMenuMapper;
 import org.example.Mapper.RolloutMenuItemMapper;
@@ -43,12 +44,16 @@ public class RolloutMenuItemRepository {
 
     }
 
-    public List<EmployeeMenuDto> getMenuForEmployee() {
-        try {
-            List<EmployeeMenuDto> employeeMenuItems = jdbcTemplate.query(DatabaseConstants.SELECT_MENU_FOR_EMPLOYEE, new EmployeeMenuMapper());
-            return employeeMenuItems;
-        } catch (DataAccessException ex) {
-            throw new RuntimeException("Database error occurred", ex);
+    public List<EmployeeMenuDto> getMenuForEmployee(String username, Profile profile) {
+        String query = DatabaseConstants.SELECT_MENU_FOR_EMPLOYEE;
+
+        if (profile != null) {
+            query += " LEFT JOIN profile p ON p.username = ? " +
+                    "ORDER BY CASE WHEN p.username IS NOT NULL THEN 0 ELSE 1 END, " +
+                    "p.meal_preference_id, p.spice_level_id, p.region_id, p.sweet_tooth DESC";
+            return jdbcTemplate.query(query, new Object[]{username}, new EmployeeMenuMapper());
+        } else {
+            return jdbcTemplate.query(query, new EmployeeMenuMapper());
         }
     }
 }

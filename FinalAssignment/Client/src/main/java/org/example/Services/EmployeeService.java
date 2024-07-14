@@ -3,6 +3,7 @@ package org.example.Services;
 import com.google.gson.Gson;
 import org.example.Dto.EmployeeMenuDto;
 import org.example.Dto.NotificationDto;
+import org.example.Dto.ProfileDto;
 import org.example.Dto.RatingDto;
 import org.example.Handler.OutputHandler;
 import org.example.Handler.RequestHandler;
@@ -102,6 +103,30 @@ public class EmployeeService {
         Gson gson = new Gson();
         String ratingPayload = gson.toJson(ratingDto);
         RequestHandler.sendRequest(out, "GIVE_DISCARD_ITEM_RATING", ratingPayload, sessionToken);
+
+        String chooseItemResponse = ResponseHandler.readResponseObject(in, String.class);
+        return chooseItemResponse;
+    }
+
+    public String updateProfile(BufferedReader in, PrintWriter out, Scanner scanner, String sessionToken) throws IOException {
+        System.out.print("Enter your meal preference(Vegetarian/Non Vegetarian/Eggetarian): ");
+        String mealPreference = scanner.nextLine();
+        System.out.print("Enter your spice level(High/Medium/Low): ");
+        String spiceLevel = scanner.nextLine();
+        System.out.println("What region food do you prefer?(North Indian/South Indian/Other)");
+        String region = scanner.nextLine();
+        System.out.println("Do you have a sweet tooth?(true/false)");
+        Boolean sweetTooth = Boolean.parseBoolean(scanner.nextLine());
+
+        ProfileDto profile = new ProfileDto();
+        profile.setMealPreference(mealPreference);
+        profile.setSpiceLevel(spiceLevel);
+        profile.setRegion(region);
+        profile.setSweetTooth(sweetTooth);
+
+        Gson gson = new Gson();
+        String profilePayload = gson.toJson(profile);
+        RequestHandler.sendRequest(out, "UPDATE_PROFILE", profilePayload, sessionToken);
 
         String chooseItemResponse = ResponseHandler.readResponseObject(in, String.class);
         return chooseItemResponse;
