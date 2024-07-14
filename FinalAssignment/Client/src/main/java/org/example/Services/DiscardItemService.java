@@ -2,19 +2,17 @@ package org.example.Services;
 
 import org.example.Dto.DiscardItemDto;
 import org.example.Handler.OutputHandler;
-import org.example.Handler.RequestHandler;
-import org.example.Handler.ResponseHandler;
+import org.example.Handler.ProtocolHandler;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
-public class DiscardItemService {
-    public List<DiscardItemDto> getDiscardItems(BufferedReader in, PrintWriter out, String sessionToken) throws IOException {
-        RequestHandler.sendRequest(out, "VIEW_DISCARD_ITEMS", "", sessionToken);
+import static org.example.Constants.CommandEnum.VIEW_DISCARD_ITEMS;
 
-        List<DiscardItemDto> rolloutMenu = ResponseHandler.readResponseList(in, DiscardItemDto.class);
+public class DiscardItemService {
+    public List<DiscardItemDto> getDiscardItems(String sessionToken, ProtocolHandler protocolHandler) throws IOException {
+        protocolHandler.sendRequest(VIEW_DISCARD_ITEMS.getCommandName(), "", sessionToken);
+        List<DiscardItemDto> rolloutMenu = protocolHandler.receiveResponseList(DiscardItemDto.class);
 
         for (DiscardItemDto item : rolloutMenu) {
             OutputHandler.printDiscardItemResponse(item);

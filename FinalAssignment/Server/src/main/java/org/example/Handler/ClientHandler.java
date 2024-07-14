@@ -25,17 +25,17 @@ public class ClientHandler extends Thread {
         PrintWriter out = null;
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
+            ProtocolHandler protocolHandler = new ProtocolHandler(out, in);
             while (true) {
                 String header = in.readLine();
                 System.out.println("Header: " + header);
                 if (header != null && !header.isEmpty()) {
-                    RequestData requestData = readRequest(header, in);
+                    RequestData requestData = protocolHandler.receiveRequest(header);
                     if (!isValidSession(requestData)) {
-                        System.out.println("Invalid or missing session token.");
-                        //sendError(out, "Invalid or missing session token.\"");
+                        protocolHandler.sendError("Invalid or missing session token", requestData.getFormat());
                         continue;
                     }
-                    messageHandlerFactory.handleMessage(requestData.getMessageType(), requestData.getPayload(), requestData.getFormat(), out);
+                    messageHandlerFactory.handleMessage(requestData, protocolHandler);
                 }
             }
         } catch (IOException e) {
@@ -46,25 +46,6 @@ public class ClientHandler extends Thread {
            closeClientSocket();
         }
     }
-
-    private RequestData readRequest(String header, BufferedReader in) throws IOException {
-        String[] headerParts = header.split("\\|");
-
-        String messageType = headerParts[0];
-        int payloadLength = Integer.parseInt(headerParts[1]);
-        String payload = readPayload(in, payloadLength);
-        String format = headerParts[2];
-        String sessionToken = headerParts.length > 3 ? headerParts[3] : null;
-
-        return new RequestData(messageType, payloadLength, payload, format, sessionToken);
-    }
-
-    private String readPayload(BufferedReader in, int payloadLength) throws IOException {
-        char[] payloadBuffer = new char[payloadLength];
-        in.read(payloadBuffer, 0, payloadLength);
-        return new String(payloadBuffer);
-    }
-
     private void closeClientSocket() {
         if (clientSocket != null && !clientSocket.isClosed()) {
             try {
@@ -78,6 +59,4 @@ public class ClientHandler extends Thread {
     private boolean isValidSession(RequestData requestData){
         return "LOGIN".equals(requestData.getMessageType()) || (requestData.getSessionToken() != null && AuthenticationUtils.isValidSessionToken(requestData.getSessionToken()));
     }
-
-
 }

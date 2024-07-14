@@ -3,6 +3,7 @@ package org.example;
 import org.example.Exception.OperationFailedException;
 import org.example.Handler.MenuHandler;
 import org.example.Handler.MenuHandlerFactory;
+import org.example.Handler.ProtocolHandler;
 import org.example.Services.AuthenticationService;
 
 import java.io.*;
@@ -26,16 +27,19 @@ public class Client {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             Scanner scanner = new Scanner(System.in);
 
+            String clientIpAddress = socket.getLocalAddress().getHostAddress();
+            ProtocolHandler protocolHandler = new ProtocolHandler(out, in, clientIpAddress);
+
             while (true) {
                 MenuHandlerFactory.showInitialMenu();
                 int choice = getUserChoice(scanner);
                 try {
                     switch (choice) {
                         case 1:
-                            String sessionToken = authenticationService.login(scanner, in, out);
+                            String sessionToken = authenticationService.login(scanner, protocolHandler);
                             MenuHandler menuHandler = MenuHandlerFactory.createHandler(authenticationService.getRoleFromToken(sessionToken), sessionToken);
                             if (menuHandler != null) {
-                                menuHandler.showMenu(scanner, in, out);
+                                menuHandler.showMenu(scanner, protocolHandler);
                             } else {
                                 System.out.println("Invalid role type");
                             }

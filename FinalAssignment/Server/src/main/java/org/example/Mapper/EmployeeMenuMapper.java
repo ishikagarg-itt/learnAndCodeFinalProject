@@ -3,6 +3,9 @@ package org.example.Mapper;
 import org.example.Dto.EmployeeMenuDto;
 import org.example.Entity.FoodItem;
 import org.example.Entity.FoodItemType;
+import org.example.Entity.MealPreference;
+import org.example.Entity.Region;
+import org.example.Entity.SpiceLevel;
 import org.example.Entity.VotedItem;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -21,6 +24,19 @@ public class EmployeeMenuMapper implements RowMapper<EmployeeMenuDto> {
         FoodItemType foodItemType = new FoodItemType();
         foodItemType.setType(rs.getString("type_name"));
         foodItem.setType(foodItemType);
+
+        MealPreference mealPreference = new MealPreference();
+        mealPreference.setPreference(rs.getString("meal_preference"));
+        foodItem.setMealPreference(mealPreference);
+
+        SpiceLevel spiceLevel = new SpiceLevel();
+        spiceLevel.setSpiceLevel(rs.getString("spice_level"));
+        foodItem.setSpiceLevel(spiceLevel);
+
+        Region region = new Region();
+        region.setRegion(rs.getString("region"));
+        foodItem.setRegion(region);
+        foodItem.setSweetTooth(rs.getBoolean("sweet_tooth"));
 
         employeeMenu.setFoodItem(foodItem);
         employeeMenu.setAverageRating(rs.getDouble("item_rating"));

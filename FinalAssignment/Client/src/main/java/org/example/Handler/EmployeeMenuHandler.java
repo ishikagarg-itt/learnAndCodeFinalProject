@@ -26,7 +26,7 @@ public class EmployeeMenuHandler implements MenuHandler{
         discardItemService = new DiscardItemService();
     }
     @Override
-    public void showMenu(Scanner scanner, BufferedReader in, PrintWriter out) throws IOException {
+    public void showMenu(Scanner scanner, ProtocolHandler protocolHandler) throws IOException {
         while(true){
             System.out.println("1. Choose food Item");
             System.out.println("2. Give feedback");
@@ -41,23 +41,23 @@ public class EmployeeMenuHandler implements MenuHandler{
             try {
                 switch (choice) {
                     case 1:
-                        employeeService.getRollOutMenu(in, out, sessionToken);
-                        showChooseItemMenu(scanner, in, out);
+                        employeeService.getRollOutMenu(sessionToken, protocolHandler);
+                        showChooseItemMenu(scanner, protocolHandler);
                         break;
                     case 2:
-                        String ratingResponse = employeeService.provideRating(in, out, scanner, sessionToken);
+                        String ratingResponse = employeeService.provideRating(scanner, sessionToken, protocolHandler);
                         System.out.println(ratingResponse);
                         break;
                     case 3:
-                        employeeService.getNotifications(in, out, sessionToken);
+                        employeeService.getNotifications(sessionToken, protocolHandler);
                         break;
                     case 4:
-                        discardItemService.getDiscardItems(in, out, sessionToken);
-                        String discardItemRatingResponse = employeeService.provideDiscardItemRating(in, out, scanner, sessionToken);
+                        discardItemService.getDiscardItems(sessionToken, protocolHandler);
+                        String discardItemRatingResponse = employeeService.provideDiscardItemRating(scanner, sessionToken, protocolHandler);
                         System.out.println(discardItemRatingResponse);
                         break;
                     case 5:
-                        String updateProfileResponse = employeeService.updateProfile(in, out, scanner, sessionToken);
+                        String updateProfileResponse = employeeService.updateProfile(scanner, sessionToken, protocolHandler);
                         System.out.println(updateProfileResponse);
                     case 6:
                         System.out.println("Exiting from Chef Menu...");
@@ -72,7 +72,7 @@ public class EmployeeMenuHandler implements MenuHandler{
         }
     }
 
-    private void showChooseItemMenu(Scanner scanner, BufferedReader in, PrintWriter out) throws IOException {
+    private void showChooseItemMenu(Scanner scanner, ProtocolHandler protocolHandler) throws IOException {
         boolean isExit = false;
         List<Integer> chosenItems = new ArrayList<>();
         while(!isExit){
@@ -88,7 +88,7 @@ public class EmployeeMenuHandler implements MenuHandler{
                     chosenItems = employeeService.addChosenItemInList(foodItemId, chosenItems);
                     break;
                 case 2:
-                    String chooseItemsResponse = employeeService.chooseFoodItem(in, out, chosenItems, sessionToken);
+                    String chooseItemsResponse = employeeService.chooseFoodItem(chosenItems, sessionToken, protocolHandler);
                     System.out.println(chooseItemsResponse);
                     isExit = true;
                     break;

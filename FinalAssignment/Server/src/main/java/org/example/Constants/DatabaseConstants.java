@@ -1,15 +1,29 @@
 package org.example.Constants;
 
 public class DatabaseConstants {
-    public static final String UPDATE_FOOD_ITEM = "UPDATE food_item SET name = ?, availability_status = ? WHERE Id = ?";
-    public static final String INSERT_FOOD_ITEM = "INSERT INTO food_item (name, availability_status, type_id) VALUES (?, ?, ?)";
-    public static final String SELECT_FOOD_ITEM_BY_ID = "SELECT fi.*,t.type as type_name FROM food_item fi " + "LEFT JOIN food_item_type t ON fi.type_id = t.id " + "WHERE fi.id = ?";
+    public static final String UPDATE_FOOD_ITEM = "UPDATE food_item SET name = ?, availability_status = ?, type_id = ?, preference_id = ?, spice_level_id = ?, region_id = ?, sweet_tooth = ? WHERE Id = ?";
+    public static final String INSERT_FOOD_ITEM = "INSERT INTO food_item (name, availability_status, type_id, preference_id, spice_level_id, region_id, sweet_tooth) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public static final String SELECT_FOOD_ITEM_BY_ID = "SELECT fi.*, t.type AS type_name, mp.preference AS meal_preference, sl.spice_level AS spice_level, r.region AS region" +
+            "FROM food_item fi " +
+            "LEFT JOIN food_item_type t ON fi.type_id = t.id " +
+            "LEFT JOIN meal_preference mp ON fi.preference_id = mp.id " +
+            "LEFT JOIN spice_level sl ON fi.spice_level_id = sl.id " +
+            "LEFT JOIN region r ON fi.region_id = r.id " +
+            "WHERE fi.id = ?";
     public static final String DELETE_FOOD_ITEM = "DELETE FROM food_item WHERE id = ?";
-    public static final String SELECT_ALL_FOOD_ITEMS = "SELECT fi.*,t.type as type_name FROM food_item fi " + "LEFT JOIN food_item_type t ON fi.type_id = t.id ";
-    public static final String SELECT_TOP_FOOD_ITEMS = "SELECT fi.*, fit.type as type_name " +
+    public static final String SELECT_ALL_FOOD_ITEMS = "SELECT fi.*, t.type AS type_name, mp.preference AS meal_preference, sl.spice_level AS spice_level, r.region AS region" +
+            "FROM food_item fi " +
+            "LEFT JOIN food_item_type t ON fi.type_id = t.id " +
+            "LEFT JOIN meal_preference mp ON fi.preference_id = mp.id " +
+            "LEFT JOIN spice_level sl ON fi.spice_level_id = sl.id " +
+            "LEFT JOIN region r ON fi.region_id = r.id ";
+    public static final String SELECT_TOP_FOOD_ITEMS = "SELECT fi.*, fit.type AS type_name, mp.preference AS meal_preference, sl.spice_level AS spice_level, r.region AS region, fi.sweet_tooth " +
             "FROM item_audit ia " +
             "JOIN food_item fi ON ia.food_item_id = fi.id " +
             "JOIN food_item_type fit ON fi.type_id = fit.id " +
+            "LEFT JOIN meal_preference mp ON fi.preference_id = mp.id " +
+            "LEFT JOIN spice_level sl ON fi.spice_level_id = sl.id " +
+            "LEFT JOIN region r ON fi.region_id = r.id " +
             "WHERE fit.type = ? " +
             "ORDER BY (ia.average_rating + ia.average_sentiment) / 2 DESC " +
             "LIMIT 5";
@@ -32,11 +46,16 @@ public class DatabaseConstants {
             "LEFT JOIN role r ON u.role_id = r.id " +
             "WHERE u.username = ? AND u.employee_id = ?";
     public static final String INSERT_ROLLOUT_MENU_ITEM = "INSERT INTO rollout_menu_item (food_item_id) VALUES (?)";
-    public static final String SELECT_MENU_FOR_EMPLOYEE = "SELECT ia.average_rating AS item_rating, ia.average_sentiment AS item_sentiment, fit.type AS type_name, fi.name AS item_name, fi.id AS item_id " +
+    public static final String SELECT_MENU_FOR_EMPLOYEE = "SELECT ia.average_rating AS item_rating, ia.average_sentiment AS item_sentiment, " +
+            "fit.type AS type_name, fi.name AS item_name, fi.id AS item_id, " +
+            "mp.preference AS meal_preference, sl.spice_level AS spice_level, r.region AS region, fi.sweet_tooth " +
             "FROM rollout_menu rm " +
             "LEFT JOIN food_item fi ON rm.food_item_id = fi.id " +
             "LEFT JOIN food_item_type fit ON fi.type_id = fit.id " +
             "LEFT JOIN item_audit ia ON ia.food_item_id = fi.id " +
+            "LEFT JOIN meal_preference mp ON fi.preference_id = mp.id " +
+            "LEFT JOIN spice_level sl ON fi.spice_level_id = sl.id " +
+            "LEFT JOIN region r ON fi.region_id = r.id " +
             "WHERE rm.rollout_date = CURDATE()";
     public static final String SELECT_ITEMS_TO_BE_VOTED_TODAY = "SELECT * FROM rollout_menu WHERE food_item_id = ? AND rollout_date = CURRENT_DATE";
     public static final String COUNT_VOTING_FOR_FOOD_ITEM_BY_USER_TODAY = "SELECT COUNT(*) FROM voted_item WHERE username = ? AND food_item_id = ? AND DATE(voting_date) = CURDATE()";

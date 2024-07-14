@@ -1,19 +1,12 @@
 package org.example.Handler;
 
-import org.example.Dto.FoodItemDto;
-import org.example.Dto.FoodItemResponseDto;
 import org.example.Exception.OperationFailedException;
 import org.example.Services.ChefService;
 import org.example.Services.DiscardItemService;
 import org.example.Services.FoodItemService;
 import org.example.Services.RecommendationService;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class ChefMenuHandler implements MenuHandler{
@@ -31,7 +24,7 @@ public class ChefMenuHandler implements MenuHandler{
     }
 
     @Override
-    public void showMenu(Scanner scanner, BufferedReader in, PrintWriter out) throws IOException {
+    public void showMenu(Scanner scanner, ProtocolHandler protocolHandler) throws IOException {
         while(true){
             System.out.println("1. Get recommendation");
             System.out.println("2. Rollout menu");
@@ -43,15 +36,15 @@ public class ChefMenuHandler implements MenuHandler{
             try {
                 switch (choice) {
                     case 1:
-                        recommendationService.getRecommendation(in, out, sessionToken);
+                        recommendationService.getRecommendation(sessionToken, protocolHandler);
                         break;
                     case 2:
-                        String rolloutResponse = chefService.rolloutMenu(in, out, scanner, sessionToken);
+                        String rolloutResponse = chefService.rolloutMenu(scanner, sessionToken, protocolHandler);
                         System.out.println(rolloutResponse);
                         break;
                     case 3:
-                        discardItemService.getDiscardItems(in, out, sessionToken);
-                        showDiscardItemMenu(scanner, in, out);
+                        discardItemService.getDiscardItems(sessionToken, protocolHandler);
+                        showDiscardItemMenu(scanner, protocolHandler);
                         break;
                     case 4:
                         System.out.println("Exiting from Chef Menu...");
@@ -66,7 +59,7 @@ public class ChefMenuHandler implements MenuHandler{
         }
     }
 
-    private void showDiscardItemMenu(Scanner scanner, BufferedReader in, PrintWriter out) throws IOException {
+    private void showDiscardItemMenu(Scanner scanner, ProtocolHandler protocolHandler) throws IOException {
         boolean isExit = false;
         while(!isExit){
             System.out.println("1. Delete item from menu");
@@ -77,11 +70,11 @@ public class ChefMenuHandler implements MenuHandler{
             scanner.nextLine();
             switch(choice){
                 case 1:
-                    String deleteSuccessMessage = foodItemService.delete(in, out, scanner, sessionToken);
+                    String deleteSuccessMessage = foodItemService.delete(scanner, sessionToken, protocolHandler);
                     System.out.println(deleteSuccessMessage);
                     break;
                 case 2:
-                    String askFeedbackResponse = chefService.askFeedback(in, out, sessionToken);
+                    String askFeedbackResponse = chefService.askFeedback(sessionToken, protocolHandler);
                     System.out.println(askFeedbackResponse);
                     break;
                 case 3:

@@ -6,6 +6,11 @@ public enum FormatEnum {
     XML("XML");
     private String formatName;
 
+    @Override
+    public String toString() {
+        return formatName;
+    }
+
     FormatEnum(String formatName) {
         this.formatName = formatName;
     }

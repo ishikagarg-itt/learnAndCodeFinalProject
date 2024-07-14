@@ -4,6 +4,8 @@ import org.example.Controller.ChefController;
 import org.example.Controller.DiscardItemController;
 import org.example.Controller.FoodItemController;
 import org.example.Deserializer.RequestDeserializer;
+import org.example.Dto.FoodItemDto;
+import org.example.Dto.RequestData;
 import org.example.Entity.DiscardItem;
 import org.example.Entity.FoodItem;
 import org.example.Serializer.ResponseSerializer;
@@ -28,24 +30,22 @@ public class ChefHandler implements RoleHandler {
     }
 
     @Override
-    public void handleCommands(String messageType, String payload, String format, PrintWriter out) {
-        switch (messageType) {
-            case "GET-RECOMMENDATION":
-                handle(out, format);
+    public void handleCommands(RequestData requestData, ProtocolHandler protocolHandler) {
+        switch (requestData.getMessageType()) {
+            case "GET_RECOMMENDATION":
+                handle(requestData, protocolHandler);
                 break;
             case "ROLL_OUT_MENU":
-                handleRollOutMenu(out, payload, format);
+                handleRollOutMenu(requestData, protocolHandler);
                 break;
             case "VIEW_DISCARD_ITEMS":
-                handleViewDiscardItems(out, format);
+                handleViewDiscardItems(requestData, protocolHandler);
                 break;
             case "DELETE_ITEM":
-                handleDelete(out, payload, format);
+                handleDelete(requestData, protocolHandler);
                 break;
             case "ASK_FEEDBACK":
-                handleAskFeedback(out, format);
-                break;
-            case "LOGOUT":
+                handleAskFeedback(requestData, protocolHandler);
                 break;
             default:
                 System.out.println("Invalid choice");
@@ -53,56 +53,33 @@ public class ChefHandler implements RoleHandler {
         }
     }
 
-    private void handle(PrintWriter out, String format) {
+    private void handle(RequestData requestData, ProtocolHandler protocolHandler) {
         List<FoodItem> foodItems = chefController.getRecommendation();
-        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
-        String responsePayload = responseSerializer.serialize(foodItems);
-        System.out.println("response payload" + responsePayload);
-        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
-        out.println(responseHeader);
-        out.println(responsePayload);
+        protocolHandler.sendResponse("SUCCESS", foodItems, requestData.getFormat());
         System.out.println("Server sent response to client");
     }
 
-    private void handleRollOutMenu(PrintWriter out, String payload, String format) {
-        RequestDeserializer requestDeserializer = SerealizationUtils.getRequestDeserializer(format);
-        List<Integer> foodItemIds = requestDeserializer.deserializeList(payload, Integer.class);
+    private void handleRollOutMenu(RequestData requestData, ProtocolHandler protocolHandler) {
+        List<Integer> foodItemIds = protocolHandler.deserializeRequestPayloadList(requestData, Integer.class);
         String rolloutMenuResponse = chefController.rolloutMenu(foodItemIds);
-        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
-        String responsePayload = responseSerializer.serialize(rolloutMenuResponse);
-        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
-        out.println(responseHeader);
-        out.println(responsePayload);
+        protocolHandler.sendResponse("SUCCESS", rolloutMenuResponse, requestData.getFormat());
         System.out.println("Server sent response to client");
     }
 
-    private void handleViewDiscardItems(PrintWriter out, String format) {
+    private void handleViewDiscardItems(RequestData requestData, ProtocolHandler protocolHandler) {
         List<DiscardItem> discardItems = discardItemController.getDiscardItems();
-        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
-        String responsePayload = responseSerializer.serialize(discardItems);
-        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
-        System.out.println(responsePayload);
-        out.println(responseHeader);
-        out.println(responsePayload);
+        protocolHandler.sendResponse("SUCCESS", discardItems, requestData.getFormat());
     }
 
-    private void handleDelete(PrintWriter out, String payload, String format) {
-        RequestDeserializer requestDeserializer = SerealizationUtils.getRequestDeserializer(format);
-        int id = requestDeserializer.deserializeObject(payload, Integer.class);
+    private void handleDelete(RequestData requestData, ProtocolHandler protocolHandler) {
+        int id = protocolHandler.deserializeRequestPayload(requestData, Integer.class);
         foodItemController.delete(id);
         String responsePayload = "Item deleted successfully";
-        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
-        out.println(responseHeader);
-        out.println(responsePayload);
+        protocolHandler.sendResponse("SUCCESS", responsePayload, requestData.getFormat());
     }
 
-    private void handleAskFeedback(PrintWriter out, String format) {
+    private void handleAskFeedback(RequestData requestData, ProtocolHandler protocolHandler) {
         String askFeedBackResponse = chefController.askFeedBack();
-        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
-        String responsePayload = responseSerializer.serialize(askFeedBackResponse);
-        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
-        System.out.println(responsePayload);
-        out.println(responseHeader);
-        out.println(responsePayload);
+        protocolHandler.sendResponse("SUCCESS", askFeedBackResponse, requestData.getFormat());
     }
 }

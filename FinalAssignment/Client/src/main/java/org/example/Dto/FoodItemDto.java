@@ -6,6 +6,10 @@ public class FoodItemDto {
     private String name;
     private String type;
     private boolean availabilityStatus;
+    private String mealPreference;
+    private String spiceLevel;
+    private String region;
+    private Boolean sweetTooth;
 
     public String getName() {
         return name;
@@ -39,8 +43,35 @@ public class FoodItemDto {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "name : " + name + ", availability_status : " + availabilityStatus;
+    public String getMealPreference() {
+        return mealPreference;
+    }
+
+    public void setMealPreference(String mealPreference) {
+        this.mealPreference = mealPreference;
+    }
+
+    public String getSpiceLevel() {
+        return spiceLevel;
+    }
+
+    public void setSpiceLevel(String spiceLevel) {
+        this.spiceLevel = spiceLevel;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public Boolean getSweetTooth() {
+        return sweetTooth;
+    }
+
+    public void setSweetTooth(Boolean sweetTooth) {
+        this.sweetTooth = sweetTooth;
     }
 }

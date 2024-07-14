@@ -9,9 +9,15 @@ import org.example.Mapper.FoodItemMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
+
+import static org.example.Constants.DatabaseConstants.INSERT_FOOD_ITEM;
 
 public class FoodItemRepository implements GenericRepository<FoodItem, Integer> {
 
@@ -25,12 +31,22 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
 
     @Override
     public FoodItem save(FoodItem foodItem) {
-        int rowsAffected = jdbcTemplate.update(DatabaseConstants.INSERT_FOOD_ITEM,
-                foodItem.getName(),
-                foodItem.isAvailabilityStatus(),
-                foodItem.getType().getId());
-
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int rowsAffected = jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(INSERT_FOOD_ITEM, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, foodItem.getName());
+            ps.setBoolean(2, foodItem.isAvailabilityStatus());
+            ps.setInt(3, foodItem.getType().getId());
+            ps.setInt(4, foodItem.getMealPreference().getId());
+            ps.setInt(5, foodItem.getSpiceLevel().getId());
+            ps.setInt(6, foodItem.getRegion().getId());
+            ps.setBoolean(7, foodItem.isSweetTooth());
+            return ps;
+        }, keyHolder);
         if (rowsAffected > 0) {
+            int generatedId = keyHolder.getKey().intValue();
+            System.out.println("generatedId" + generatedId);
+            foodItem.setId(generatedId);
             return foodItem;
         } else {
             throw new RuntimeException("Failed to insert food item into the database");
@@ -53,6 +69,11 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
             int rowsAffected = jdbcTemplate.update(DatabaseConstants.UPDATE_FOOD_ITEM,
                     foodItem.getName(),
                     foodItem.isAvailabilityStatus(),
+                    foodItem.getType().getId(),
+                    foodItem.getMealPreference().getId(),
+                    foodItem.getSpiceLevel().getId(),
+                    foodItem.getRegion().getId(),
+                    foodItem.isSweetTooth(),
                     id);
 
             if (rowsAffected == 0) {
@@ -88,7 +109,6 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
     }
 
     public Boolean isExist(int id) {
-
         try {
             Integer count = jdbcTemplate.queryForObject(DatabaseConstants.COUNT_FOOD_ITEM_BY_ID, new Object[]{id}, Integer.class);
             return count != null && count > 0;

@@ -20,13 +20,13 @@ public class FoodItemService {
         itemAuditRepository = new ItemAuditRepository();
     }
 
-    public FoodItem add(FoodItem foodItem){
+    public String add(FoodItem foodItem){
         FoodItem addedFoodItem = foodItemRepository.save(foodItem);
         ItemAudit itemAudit = buildItemAudit(addedFoodItem.getId());
         itemAuditRepository.save(itemAudit);
         Notification notification = notificationService.buildNotification("Add_Item", "A new item has been added to the menu");
         notificationService.sendNotification(notification);
-        return addedFoodItem;
+        return "Item has been added successfuly";
     }
 
     public FoodItem get(int id){

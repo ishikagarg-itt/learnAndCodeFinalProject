@@ -5,6 +5,7 @@ import org.example.Controller.AuthenticationController;
 import org.example.Deserializer.RequestDeserializer;
 import org.example.Dto.LoginRequestDto;
 import org.example.Dto.LoginResponseDto;
+import org.example.Dto.RequestData;
 import org.example.Serializer.ResponseSerializer;
 import org.example.utils.SerealizationUtils;
 
@@ -21,15 +22,10 @@ public class LoginHandler {
         this.gson = new Gson();
     }
 
-    public String handle(PrintWriter out, String payload, String format) {
-        RequestDeserializer resquestDeserializer = SerealizationUtils.getRequestDeserializer(format);
-        LoginRequestDto loginRequest = resquestDeserializer.deserializeObject(payload, LoginRequestDto.class);
+    public String handle(RequestData requestData, ProtocolHandler protocolHandler) {
+        LoginRequestDto loginRequest = protocolHandler.deserializeRequestPayload(requestData, LoginRequestDto.class);
         LoginResponseDto loginResponse = authenticationController.login(loginRequest);
-        ResponseSerializer responseSerializer = SerealizationUtils.getResponseSerializer(format);
-        String responsePayload = responseSerializer.serialize(loginResponse);
-        String responseHeader = "SUCCESS|" + responsePayload.length() + "|" + JSON;
-        out.println(responseHeader);
-        out.println(responsePayload);
+        protocolHandler.sendResponse("SUCCESS", loginResponse, requestData.getFormat());
         System.out.println("Server sent session token to client");
         return loginResponse.getSessionToken();
 

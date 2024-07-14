@@ -1,38 +1,27 @@
 package org.example.Services;
 
-import com.google.gson.Gson;
 import org.example.Dto.LoginRequestDto;
 import org.example.Dto.LoginResponseDto;
-import org.example.Handler.RequestHandler;
-import org.example.Handler.ResponseHandler;
+import org.example.Handler.ProtocolHandler;
+import org.example.utils.UserInputUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Scanner;
+
+import static org.example.Constants.CommandEnum.LOGIN;
 
 public class AuthenticationService {
 
-    public String login(Scanner scanner, BufferedReader in, PrintWriter out) throws IOException {
-        System.out.print("Enter employee ID: ");
-        String employeeId = scanner.nextLine();
-        System.out.print("Enter username: ");
-        String userName = scanner.nextLine();
+    public String login(Scanner scanner, ProtocolHandler protocolHandler) throws IOException {
+        LoginRequestDto loginData = UserInputUtils.collectLoginInput(scanner);
+        protocolHandler.sendRequest(LOGIN.getCommandName(), loginData, null);
+        LoginResponseDto loginResponse = protocolHandler.receiveResponse(LoginResponseDto.class);
 
-        LoginRequestDto loginData = new LoginRequestDto();
-        loginData.setEmployeeId(employeeId);
-        loginData.setUserName(userName);
-
-        Gson gson = new Gson();
-        String loginPayload = gson.toJson(loginData);
-
-        RequestHandler.sendRequest(out, "LOGIN", loginPayload, null);
-        LoginResponseDto loginResponse = ResponseHandler.readResponseObject(in, LoginResponseDto.class);
         if(loginResponse == null){
             return null;
         }
         String sessionToken = loginResponse.getSessionToken();
-        System.out.println("Logged in, session token: " + sessionToken);
+        System.out.println("Logged in with session token: " + sessionToken);
         return sessionToken;
     }
 

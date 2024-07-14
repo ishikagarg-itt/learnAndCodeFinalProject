@@ -21,7 +21,7 @@ public class FoodItemController {
         return foodItemService.getAll();
     }
 
-    public FoodItem add(FoodItem foodItem){
+    public String add(FoodItem foodItem){
         return foodItemService.add(foodItem);
     }
 

@@ -1,7 +1,9 @@
 package org.example.Handler;
 
+import org.example.Dto.RequestData;
+
 import java.io.PrintWriter;
 
 public interface RoleHandler {
-    public void handleCommands(String messageType, String payload, String format, PrintWriter out);
+    public void handleCommands(RequestData requestData, ProtocolHandler protocolHandler);
 }

@@ -1,6 +1,8 @@
 package org.example.Handler;
 
 import com.google.gson.Gson;
+import org.example.Dto.LoginRequestDto;
+import org.example.Dto.RequestData;
 import org.example.Exception.NotFoundException;
 import org.example.utils.AuthenticationUtils;
 import org.springframework.dao.DataAccessException;
@@ -17,30 +19,21 @@ public class MessageHandlerFactory {
         loginHandler = new LoginHandler();
     }
 
-    public void handleMessage(String messageType, String payload, String format, PrintWriter out) {
+    public void handleMessage(RequestData requestData, ProtocolHandler protocolHandler) {
         try {
-            if (messageType.equals("LOGIN")) {
-                sessionToken = loginHandler.handle(out, payload, format);
+            if (requestData.getMessageType().equals("LOGIN")) {
+                sessionToken = loginHandler.handle(requestData, protocolHandler);
             } else {
                 if (sessionToken == null) {
                     throw new RuntimeException("No session token. User must log in first.");
                 }
                 RoleHandler roleHandler = RoleHandlerFactory.createHandler(AuthenticationUtils.getRoleFromToken(sessionToken), sessionToken);
-                roleHandler.handleCommands(messageType, payload, format, out);
+                roleHandler.handleCommands(requestData, protocolHandler);
             }
         }catch(NotFoundException | IllegalStateException e) {
-            sendError(out, e.getMessage());
+            protocolHandler.sendError(e.getMessage(), requestData.getFormat());
         }catch (RuntimeException e){
-            sendError(out, e.getMessage());
+            protocolHandler.sendError(e.getMessage(), requestData.getFormat());
         }
-    }
-
-    private void sendError(PrintWriter out, String errorMessage) {
-        String errorResponse = errorMessage;
-        String errorPayload = gson.toJson(errorResponse);
-        String errorHeader = "ERROR|" + errorPayload.length();
-        out.println(errorHeader);
-        out.println(errorPayload);
-        System.out.println("Sent error to client: " + errorMessage);
     }
 }

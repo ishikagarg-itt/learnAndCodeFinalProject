@@ -4,11 +4,8 @@ import org.example.Dto.FoodItemDto;
 import org.example.Dto.FoodItemResponseDto;
 import org.example.Exception.OperationFailedException;
 import org.example.Services.FoodItemService;
-import org.example.Services.RecommendationService;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,7 +18,7 @@ public class AdminMenuHandler implements MenuHandler {
         this.sessionToken = sessionToken;
     }
     @Override
-    public void showMenu(Scanner scanner, BufferedReader in, PrintWriter out) throws IOException {
+    public void showMenu(Scanner scanner, ProtocolHandler protocolHandler) throws IOException {
         while(true){
             System.out.println("1. Add Food Item");
             System.out.println("2. Update Food Item");
@@ -36,23 +33,23 @@ public class AdminMenuHandler implements MenuHandler {
             try {
                 switch (choice) {
                     case 1:
-                        FoodItemDto addedFoodItem = foodItemService.add(in, out, scanner, sessionToken);
-                        System.out.println(addedFoodItem.toString());
+                        String addFoodItemResponse = foodItemService.add(scanner, sessionToken, protocolHandler);
+                        System.out.println(addFoodItemResponse);
                         break;
                     case 2:
-                        String updateSuccessMessage = foodItemService.update(in, out, scanner, sessionToken);
+                        String updateSuccessMessage = foodItemService.update(scanner, sessionToken, protocolHandler);
                         System.out.println(updateSuccessMessage);
                         break;
                     case 3:
-                        String deleteSuccessMessage = foodItemService.delete(in, out, scanner, sessionToken);
+                        String deleteSuccessMessage = foodItemService.delete(scanner, sessionToken, protocolHandler);
                         System.out.println(deleteSuccessMessage);
                         break;
                     case 4:
-                        FoodItemResponseDto foodItem = foodItemService.get(in, out, scanner, sessionToken);
+                        FoodItemResponseDto foodItem = foodItemService.get(scanner, sessionToken, protocolHandler);
                         OutputHandler.printFoodItemResponse(foodItem);
                         break;
                     case 5:
-                        List<FoodItemResponseDto> getAllResponse = foodItemService.getAll(in, out, sessionToken);
+                        List<FoodItemResponseDto> getAllResponse = foodItemService.getAll(sessionToken, protocolHandler);
                         for (FoodItemResponseDto item : getAllResponse) {
                             OutputHandler.printFoodItemResponse(item);
                         }
