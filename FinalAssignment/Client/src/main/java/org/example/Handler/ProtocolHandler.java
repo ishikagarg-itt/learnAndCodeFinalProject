@@ -27,6 +27,8 @@ public class ProtocolHandler {
         RequestSerializer requestSerializer = RequestSerializerFactory.createSerializer(JSON.toString());
         String serializedPayload = requestSerializer.serialize(payload);
 
+        System.out.println("serialized payload: " + serializedPayload);
+
         RequestHeader header = new RequestHeader(command, serializedPayload.length(), JSON.toString(), sessionToken, ipAddress);
         String headerString = header.toHeaderString();
 

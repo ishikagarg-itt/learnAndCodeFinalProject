@@ -55,6 +55,8 @@ public class EmployeeHandler implements RoleHandler {
                 handleUpdateProfile(requestData, protocolHandler, AuthenticationUtils.getSession(sessionToken));
                 break;
             default:
+                System.out.println("Invalid choice");
+                protocolHandler.sendError("Invalid Choice", requestData.getFormat());
                 break;
         }
     }
@@ -66,10 +68,12 @@ public class EmployeeHandler implements RoleHandler {
 
     private void handleChooseItems(RequestData requestData, ProtocolHandler protocolHandler, String username) {
         List<Integer> chosenFoodItemIds = protocolHandler.deserializeRequestPayloadList(requestData, Integer.class);
+        System.out.println("chosen Food item ids: " + chosenFoodItemIds);
         chosenFoodItemIds = chosenFoodItemIds
                 .stream()
                 .distinct()
                 .collect(Collectors.toList());
+        System.out.println("chosen Food item ids with remove duplicacy: " + chosenFoodItemIds);
         String chooseItemResponse = employeeController.chooseItems(chosenFoodItemIds, username);
         protocolHandler.sendResponse("SUCCESS", chooseItemResponse, requestData.getFormat());
     }

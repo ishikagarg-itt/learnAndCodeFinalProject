@@ -50,6 +50,7 @@ public class AdminHandler implements RoleHandler {
                 break;
             default:
                 System.out.println("Invalid choice");
+                protocolHandler.sendError("Invalid Choice", requestData.getFormat());
                 break;
         }
     }

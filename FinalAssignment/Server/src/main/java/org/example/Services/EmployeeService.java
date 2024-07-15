@@ -9,7 +9,6 @@ import org.example.Entity.Notification;
 import org.example.Entity.Profile;
 import org.example.Entity.Rating;
 import org.example.Entity.Region;
-import org.example.Entity.RolloutMenuItem;
 import org.example.Entity.SpiceLevel;
 import org.example.Entity.User;
 import org.example.Entity.VotedItem;
@@ -59,9 +58,9 @@ public class EmployeeService {
     }
 
     public String chooseItems(List<Integer> chosenFoodItemIds, String username){
+        System.out.println("chosenFoodItemIds: " + chosenFoodItemIds);
         for(int foodItemId : chosenFoodItemIds){
-            RolloutMenuItem rolloutMenuItem = rolloutMenuRepository.getItemsToBeVotedForToday(foodItemId);
-            if(rolloutMenuItem == null){
+            if(!rolloutMenuRepository.isFoodItemRolledOutToday(foodItemId)){
                 throw new NotFoundException("Food item has not been rolled out");
             }
 
@@ -86,8 +85,8 @@ public class EmployeeService {
         }
 
         Rating ratingTobeAdded = buildRating(rating);
-        recommendationService.updateItemAudit(rating.getFoodItemId());
         ratingRepository.save(ratingTobeAdded, username);
+        recommendationService.updateItemAudit(rating.getFoodItemId());
         return "You have rated the item successfully";
     }
 
@@ -102,8 +101,8 @@ public class EmployeeService {
         }
 
         Rating ratingTobeAdded = buildRating(rating);
-        recommendationService.updateItemAudit(rating.getFoodItemId());
         ratingRepository.save(ratingTobeAdded, username);
+        recommendationService.updateItemAudit(rating.getFoodItemId());
         return "You have rated the item successfully";
     }
 

@@ -88,6 +88,7 @@ public class EmployeeMenuHandler implements MenuHandler{
                     chosenItems = employeeService.addChosenItemInList(foodItemId, chosenItems);
                     break;
                 case 2:
+                    System.out.println("chose food items: " + chosenItems);
                     String chooseItemsResponse = employeeService.chooseFoodItem(chosenItems, sessionToken, protocolHandler);
                     System.out.println(chooseItemsResponse);
                     isExit = true;

@@ -41,7 +41,6 @@ public class RecommendationService {
 
         for (FoodItemRating foodItemRating : foodItemRatings) {
             List<String> comments = Arrays.asList(foodItemRating.getComments().split(", "));
-
             double averageSentiment = SentimentAnalysis.analyzeSentiments(comments);
             ratingRepository.updateItemAudit(foodItemRating, averageSentiment);
         }

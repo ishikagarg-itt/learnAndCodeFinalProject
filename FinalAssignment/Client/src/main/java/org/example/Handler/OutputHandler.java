@@ -4,8 +4,11 @@ import org.example.Dto.DiscardItemDto;
 import org.example.Dto.EmployeeMenuDto;
 import org.example.Dto.FoodItemResponseDto;
 import org.example.Dto.FoodItemTypeDto;
+import org.example.Dto.MealPreferenceDto;
 import org.example.Dto.NotificationDto;
 import org.example.Dto.NotificationTypeDto;
+import org.example.Dto.RegionDto;
+import org.example.Dto.SpiceLevelDto;
 import org.example.Dto.VotedItemDto;
 
 import javax.management.Notification;
@@ -19,6 +22,21 @@ public class OutputHandler {
         FoodItemTypeDto type = item.getType();
         if (type != null) {
             System.out.println("Type Name: " + type.getType());
+        }
+
+        MealPreferenceDto mealPreference = item.getMealPreference();
+        if (mealPreference != null) {
+            System.out.println("Meal Preference: " + mealPreference.getPreference());
+        }
+
+        SpiceLevelDto spiceLevel = item.getSpiceLevel();
+        if(spiceLevel != null){
+            System.out.println("Spice Level: " + spiceLevel.getSpiceLevel());
+        }
+
+        RegionDto region = item.getRegion();
+        if(region != null){
+            System.out.println("Region: " + region.getRegion());
         }
 
         System.out.println("-----");

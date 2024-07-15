@@ -45,7 +45,6 @@ public class FoodItemRepository implements GenericRepository<FoodItem, Integer> 
         }, keyHolder);
         if (rowsAffected > 0) {
             int generatedId = keyHolder.getKey().intValue();
-            System.out.println("generatedId" + generatedId);
             foodItem.setId(generatedId);
             return foodItem;
         } else {

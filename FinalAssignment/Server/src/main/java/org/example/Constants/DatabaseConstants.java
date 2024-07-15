@@ -1,9 +1,9 @@
 package org.example.Constants;
 
 public class DatabaseConstants {
-    public static final String UPDATE_FOOD_ITEM = "UPDATE food_item SET name = ?, availability_status = ?, type_id = ?, preference_id = ?, spice_level_id = ?, region_id = ?, sweet_tooth = ? WHERE Id = ?";
+    public static final String UPDATE_FOOD_ITEM = "UPDATE food_item SET name = ?, availability_status = ?, type_id = ?, preference_id = ?, spice_level_id = ?, region_id = ?, sweet_tooth = ? WHERE id = ?";
     public static final String INSERT_FOOD_ITEM = "INSERT INTO food_item (name, availability_status, type_id, preference_id, spice_level_id, region_id, sweet_tooth) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    public static final String SELECT_FOOD_ITEM_BY_ID = "SELECT fi.*, t.type AS type_name, mp.preference AS meal_preference, sl.spice_level AS spice_level, r.region AS region" +
+    public static final String SELECT_FOOD_ITEM_BY_ID = "SELECT fi.*, t.type AS type_name, mp.preference AS meal_preference, sl.spice_level AS spice_level, r.region AS region " +
             "FROM food_item fi " +
             "LEFT JOIN food_item_type t ON fi.type_id = t.id " +
             "LEFT JOIN meal_preference mp ON fi.preference_id = mp.id " +
@@ -11,7 +11,7 @@ public class DatabaseConstants {
             "LEFT JOIN region r ON fi.region_id = r.id " +
             "WHERE fi.id = ?";
     public static final String DELETE_FOOD_ITEM = "DELETE FROM food_item WHERE id = ?";
-    public static final String SELECT_ALL_FOOD_ITEMS = "SELECT fi.*, t.type AS type_name, mp.preference AS meal_preference, sl.spice_level AS spice_level, r.region AS region" +
+    public static final String SELECT_ALL_FOOD_ITEMS = "SELECT fi.*, t.type AS type_name, mp.preference AS meal_preference, sl.spice_level AS spice_level, r.region AS region " +
             "FROM food_item fi " +
             "LEFT JOIN food_item_type t ON fi.type_id = t.id " +
             "LEFT JOIN meal_preference mp ON fi.preference_id = mp.id " +
@@ -40,7 +40,10 @@ public class DatabaseConstants {
             "WHERE rating_date = CURDATE() AND food_item_id = ? " +
             "GROUP BY food_item_id";
     public static final String COUNT_RATING_FOR_FOOD_ITEM_BY_USER_TODAY = "SELECT COUNT(*) FROM rating WHERE username = ? AND food_item_id = ? AND DATE(rating_date) = CURDATE()";
-    public static final String UPDATE_ITEM_AUDIT = "UPDATE item_audit SET average_rating = ?, average_sentiment = ?" + "WHERE food_item_id = ?";
+    public static final String UPDATE_ITEM_AUDIT = "UPDATE item_audit " +
+            "SET average_rating = (average_rating + ?) / 2, " +
+            "average_sentiment = (average_sentiment + ?) / 2 " +
+            "WHERE food_item_id = ?";
     public static final String SELECT_USER_BY_USERNAME_AND_EMPLOYEE_ID = "SELECT u.*, r.id as role_id, r.name as role_name " +
             "FROM user u " +
             "LEFT JOIN role r ON u.role_id = r.id " +
@@ -49,15 +52,14 @@ public class DatabaseConstants {
     public static final String SELECT_MENU_FOR_EMPLOYEE = "SELECT ia.average_rating AS item_rating, ia.average_sentiment AS item_sentiment, " +
             "fit.type AS type_name, fi.name AS item_name, fi.id AS item_id, " +
             "mp.preference AS meal_preference, sl.spice_level AS spice_level, r.region AS region, fi.sweet_tooth " +
-            "FROM rollout_menu rm " +
+            "FROM rollout_menu_item rm " +
             "LEFT JOIN food_item fi ON rm.food_item_id = fi.id " +
             "LEFT JOIN food_item_type fit ON fi.type_id = fit.id " +
             "LEFT JOIN item_audit ia ON ia.food_item_id = fi.id " +
             "LEFT JOIN meal_preference mp ON fi.preference_id = mp.id " +
             "LEFT JOIN spice_level sl ON fi.spice_level_id = sl.id " +
-            "LEFT JOIN region r ON fi.region_id = r.id " +
-            "WHERE rm.rollout_date = CURDATE()";
-    public static final String SELECT_ITEMS_TO_BE_VOTED_TODAY = "SELECT * FROM rollout_menu WHERE food_item_id = ? AND rollout_date = CURRENT_DATE";
+            "LEFT JOIN region r ON fi.region_id = r.id ";
+    public static final String SELECT_ITEMS_TO_BE_VOTED_TODAY = "SELECT COUNT(*) FROM rollout_menu_item WHERE food_item_id = ? AND rollout_date = CURRENT_DATE";
     public static final String COUNT_VOTING_FOR_FOOD_ITEM_BY_USER_TODAY = "SELECT COUNT(*) FROM voted_item WHERE username = ? AND food_item_id = ? AND DATE(voting_date) = CURDATE()";
     public static final String INSERT_VOTED_ITEM = "INSERT INTO voted_item (food_item_id, username) VALUES (?, ?)";
     public static final String INSERT_ITEM_AUDIT = "INSERT INTO item_audit (food_item_id, average_rating, average_sentiment) VALUES (?, ?, ?)";

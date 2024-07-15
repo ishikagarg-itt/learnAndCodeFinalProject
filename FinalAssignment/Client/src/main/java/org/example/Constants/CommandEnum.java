@@ -15,7 +15,7 @@ public enum CommandEnum {
     LOGIN("LOGIN"),
     ROLL_OUT_MENU("ROLL_OUT_MENU"),
     ASK_FEEDBACK("ASK_FEEDBACK"),
-    GET_RECOMMENDATION("GET-RECOMMENDATION");
+    GET_RECOMMENDATION("GET_RECOMMENDATION");
     private String commandName;
 
     CommandEnum(String formatName) {

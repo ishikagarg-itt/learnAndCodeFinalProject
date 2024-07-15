@@ -3,6 +3,7 @@ package org.example.Dto;
 import org.example.Entity.FoodItemType;
 
 public class FoodItemDto {
+    int id;
     private String name;
     private String type;
     private String mealPreference;
@@ -65,5 +66,13 @@ public class FoodItemDto {
 
     public void setSweetTooth(boolean sweetTooth) {
         this.sweetTooth = sweetTooth;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

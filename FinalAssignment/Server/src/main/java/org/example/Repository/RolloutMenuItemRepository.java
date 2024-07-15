@@ -7,8 +7,6 @@ import org.example.Dto.EmployeeMenuDto;
 import org.example.Entity.Profile;
 import org.example.Entity.RolloutMenuItem;
 import org.example.Mapper.EmployeeMenuMapper;
-import org.example.Mapper.RolloutMenuItemMapper;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
@@ -34,25 +32,29 @@ public class RolloutMenuItemRepository {
             throw new RuntimeException("Failed to insert voted item into the database");
         }
     }
-    public RolloutMenuItem getItemsToBeVotedForToday(int foodItemId) {
-        try {
-            RolloutMenuItem rolloutMenuItem = jdbcTemplate.queryForObject(DatabaseConstants.SELECT_ITEMS_TO_BE_VOTED_TODAY, new Object[]{foodItemId}, new RolloutMenuItemMapper());
-            return rolloutMenuItem;
-        } catch (DataAccessException ex) {
-            throw new RuntimeException("Database error occurred", ex);
-        }
+    public Boolean isFoodItemRolledOutToday(int foodItemId) {
+        Integer count = jdbcTemplate.queryForObject(
+                DatabaseConstants.SELECT_ITEMS_TO_BE_VOTED_TODAY,
+                new Object[]{foodItemId},
+                Integer.class
+        );
 
+        return count != null && count > 0;
     }
 
     public List<EmployeeMenuDto> getMenuForEmployee(String username, Profile profile) {
         String query = DatabaseConstants.SELECT_MENU_FOR_EMPLOYEE;
 
         if (profile != null) {
-            query += " LEFT JOIN profile p ON p.username = ? " +
-                    "ORDER BY CASE WHEN p.username IS NOT NULL THEN 0 ELSE 1 END, " +
-                    "p.meal_preference_id, p.spice_level_id, p.region_id, p.sweet_tooth DESC";
+            query += "LEFT JOIN profile p ON p.username = ? " +
+                    "WHERE rm.rollout_date = CURDATE() " +
+                    "ORDER BY (fi.preference_id = p.meal_preference_id) DESC, " +
+                    "(fi.spice_level_id = p.spice_level_id) DESC, " +
+                    "(fi.region_id = p.region_id) DESC, " +
+                    "(fi.sweet_tooth = p.sweet_tooth) DESC";
             return jdbcTemplate.query(query, new Object[]{username}, new EmployeeMenuMapper());
         } else {
+            query += "WHERE rm.rollout_date = CURDATE()";
             return jdbcTemplate.query(query, new EmployeeMenuMapper());
         }
     }

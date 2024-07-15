@@ -18,34 +18,27 @@ public class ConversionUtils {
     private static final RegionRepository regionRepository = new RegionRepository();
     private static final SpiceLevelRepository spiceLevelRepository = new SpiceLevelRepository();
 
-    public static FoodItem convertFoodItemDtoToFoodItem(FoodItemDto foodItem){
-        FoodItem itemToBeAdded = new FoodItem();
+    public static FoodItem convertFoodItemDtoToFoodItem(FoodItemDto foodItemDto){
+        FoodItem foodItem = new FoodItem();
         FoodItemType foodItemType = new FoodItemType();
-        foodItemType.setId(foodItemTypeRepository.getByName(foodItem.getType()).get());
-        itemToBeAdded.setType(foodItemType);
+        foodItemType.setId(foodItemTypeRepository.getByName(foodItemDto.getType()).get());
+        foodItem.setType(foodItemType);
         Region region = new Region();
-        region.setId(regionRepository.getByName(foodItem.getRegion()).get());
-        itemToBeAdded.setRegion(region);
+        region.setId(regionRepository.getByName(foodItemDto.getRegion()).get());
+        foodItem.setRegion(region);
 
         MealPreference mealPreference = new MealPreference();
-        mealPreference.setId(mealPreferenceRepository.getByName(foodItem.getMealPreference()).get());
-        itemToBeAdded.setMealPreference(mealPreference);
+        mealPreference.setId(mealPreferenceRepository.getByName(foodItemDto.getMealPreference()).get());
+        foodItem.setMealPreference(mealPreference);
 
         SpiceLevel spiceLevel = new SpiceLevel();
-        spiceLevel.setId(spiceLevelRepository.getByName(foodItem.getSpiceLevel()).get());
-        itemToBeAdded.setSpiceLevel(spiceLevel);
+        spiceLevel.setId(spiceLevelRepository.getByName(foodItemDto.getSpiceLevel()).get());
+        foodItem.setSpiceLevel(spiceLevel);
 
-        itemToBeAdded.setAvailabilityStatus(foodItem.isAvailabilityStatus());
-        itemToBeAdded.setName(foodItem.getName());
-        itemToBeAdded.setSweetTooth(foodItem.isSweetTooth());
-        return itemToBeAdded;
-    }
-
-    public static FoodItemDto convertFoodItemToFoodItemDto(FoodItem addedFoodItem) {
-        FoodItemDto addedFoodItemDto = new FoodItemDto();
-        addedFoodItemDto.setName(addedFoodItem.getName());
-        addedFoodItemDto.setType(addedFoodItem.getType().getType());
-        addedFoodItemDto.setAvailabilityStatus(addedFoodItem.isAvailabilityStatus());
-        return addedFoodItemDto;
+        foodItem.setAvailabilityStatus(foodItemDto.isAvailabilityStatus());
+        foodItem.setName(foodItemDto.getName());
+        foodItem.setSweetTooth(foodItemDto.isSweetTooth());
+        foodItem.setId(foodItemDto.getId());
+        return foodItem;
     }
 }
