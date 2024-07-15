@@ -26,7 +26,7 @@ public class FoodItemService {
         itemAuditRepository.save(itemAudit);
         Notification notification = notificationService.buildNotification("Add_Item", "A new item has been added to the menu");
         notificationService.sendNotification(notification);
-        return "Item has been added successfuly";
+        return "Item has been added successfully";
     }
 
     public FoodItem get(int id){

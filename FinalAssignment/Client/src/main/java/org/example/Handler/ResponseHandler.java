@@ -1,5 +1,6 @@
 package org.example.Handler;
 
+import org.example.Constants.ResponseCodeEnum;
 import org.example.Deserializer.ResponseDeserializer;
 import org.example.Deserializer.ResponseDeserializerFactory;
 import org.example.Dto.Response;
@@ -33,9 +34,9 @@ public class ResponseHandler {
         String payload = response.getPayload();
         String format = response.getFormat();
 
-        if (headerParts[0].equals("SUCCESS")) {
+        if (headerParts[0].equals(ResponseCodeEnum.SUCCESS.toString())) {
             return deserializeResponseList(payload, responseType, format);
-        } else if (headerParts[0].equals("ERROR")) {
+        } else if (headerParts[0].equals(ResponseCodeEnum.ERROR.toString())) {
             String responsePayload = deserializeResponseObject(payload, String.class, format);
             throw new OperationFailedException(responsePayload);
         } else {
@@ -50,7 +51,6 @@ public class ResponseHandler {
         while (true) {
             headerParts = readHeader(in);
             System.out.println(headerParts[0]);
-            System.out.println("header parts " + headerParts[0]);
             payload = readPayload(headerParts, in);
             format = readFormat(headerParts);
             if (headerParts != null && !headerParts[0].isEmpty()) {
@@ -62,14 +62,12 @@ public class ResponseHandler {
 
     private static String[] readHeader(BufferedReader in) throws IOException {
         String header = in.readLine();
-        System.out.println("response header" + header);
         return header.split("\\|");
     }
 
     private static String readPayload(String[] headerParts, BufferedReader in) throws IOException {
         String payload = null;
         if(headerParts.length > 1) {
-            System.out.println("inside read payload");
             int payloadLength = Integer.parseInt(headerParts[1]);
             char[] payloadBuffer = new char[payloadLength];
             in.read(payloadBuffer, 0, payloadLength);
@@ -91,10 +89,10 @@ public class ResponseHandler {
     }
 
     private static <T> T deserializeResponseObject(String payload, Class<T> responseType, String format) throws OperationFailedException {
-        if (responseType == String.class) {
-            return responseType.cast(payload);
-        }
         ResponseDeserializer responseDeserializer = getResponseDeserializer(format);
+        if (responseType == String.class) {
+            return responseDeserializer.deserializeObject(payload, responseType);
+        }
         if (responseDeserializer != null) {
             return responseDeserializer.deserializeObject(payload, responseType);
         }

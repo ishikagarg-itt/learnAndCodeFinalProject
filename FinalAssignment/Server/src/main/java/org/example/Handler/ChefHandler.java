@@ -1,5 +1,6 @@
 package org.example.Handler;
 
+import org.example.Constants.ResponseCodeEnum;
 import org.example.Controller.ChefController;
 import org.example.Controller.DiscardItemController;
 import org.example.Controller.FoodItemController;
@@ -56,27 +57,27 @@ public class ChefHandler implements RoleHandler {
 
     private void handle(RequestData requestData, ProtocolHandler protocolHandler) {
         List<FoodItem> foodItems = chefController.getRecommendation();
-        protocolHandler.sendResponse("SUCCESS", foodItems, requestData.getFormat());
+        protocolHandler.sendResponse(ResponseCodeEnum.SUCCESS.toString(), foodItems, requestData.getFormat());
         System.out.println("Server sent response to client");
     }
 
     private void handleRollOutMenu(RequestData requestData, ProtocolHandler protocolHandler) {
         List<Integer> foodItemIds = protocolHandler.deserializeRequestPayloadList(requestData, Integer.class);
         String rolloutMenuResponse = chefController.rolloutMenu(foodItemIds);
-        protocolHandler.sendResponse("SUCCESS", rolloutMenuResponse, requestData.getFormat());
+        protocolHandler.sendResponse(ResponseCodeEnum.SUCCESS.toString(), rolloutMenuResponse, requestData.getFormat());
         System.out.println("Server sent response to client");
     }
 
     private void handleViewDiscardItems(RequestData requestData, ProtocolHandler protocolHandler) {
         List<DiscardItem> discardItems = discardItemController.getDiscardItems();
-        protocolHandler.sendResponse("SUCCESS", discardItems, requestData.getFormat());
+        protocolHandler.sendResponse(ResponseCodeEnum.SUCCESS.toString(), discardItems, requestData.getFormat());
     }
 
     private void handleDelete(RequestData requestData, ProtocolHandler protocolHandler) {
         int id = protocolHandler.deserializeRequestPayload(requestData, Integer.class);
         foodItemController.delete(id);
         String responsePayload = "Item deleted successfully";
-        protocolHandler.sendResponse("SUCCESS", responsePayload, requestData.getFormat());
+        protocolHandler.sendResponse(ResponseCodeEnum.SUCCESS.toString(), responsePayload, requestData.getFormat());
     }
 
     private void handleAskFeedback(RequestData requestData, ProtocolHandler protocolHandler) {

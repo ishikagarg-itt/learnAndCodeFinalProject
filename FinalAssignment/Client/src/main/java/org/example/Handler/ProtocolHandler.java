@@ -13,13 +13,13 @@ import java.util.List;
 import static org.example.Constants.FormatEnum.JSON;
 
 public class ProtocolHandler {
-    private PrintWriter out;
-    private BufferedReader in;
+    private PrintWriter writeResponseToStream;
+    private BufferedReader readRequestFromStream;
     private String ipAddress;
 
     public ProtocolHandler(PrintWriter out, BufferedReader in, String ipAddress) {
-        this.out = out;
-        this.in = in;
+        this.writeResponseToStream = out;
+        this.readRequestFromStream = in;
         this.ipAddress = ipAddress;
     }
 
@@ -27,22 +27,20 @@ public class ProtocolHandler {
         RequestSerializer requestSerializer = RequestSerializerFactory.createSerializer(JSON.toString());
         String serializedPayload = requestSerializer.serialize(payload);
 
-        System.out.println("serialized payload: " + serializedPayload);
-
         RequestHeader header = new RequestHeader(command, serializedPayload.length(), JSON.toString(), sessionToken, ipAddress);
         String headerString = header.toHeaderString();
 
-        System.out.println("header:" + headerString);
-        out.println(headerString);
-        out.println(serializedPayload);
-        out.flush();
+        System.out.println("Header:" + headerString);
+        writeResponseToStream.println(headerString);
+        writeResponseToStream.println(serializedPayload);
+        writeResponseToStream.flush();
     }
 
     public <T> T receiveResponse(Class<T> responseType) throws IOException, OperationFailedException {
-        return ResponseHandler.readResponseObject(in, responseType);
+        return ResponseHandler.readResponseObject(readRequestFromStream, responseType);
     }
 
     public <T> List<T> receiveResponseList(Class<T> responseType) throws IOException, OperationFailedException {
-        return ResponseHandler.readResponseList(in, responseType);
+        return ResponseHandler.readResponseList(readRequestFromStream, responseType);
     }
 }

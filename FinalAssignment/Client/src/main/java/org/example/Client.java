@@ -60,6 +60,9 @@ public class Client {
             if(e instanceof ConnectException){
                 throw new RuntimeException("You did not start the server for the client to connect");
             }
+            else if (e instanceof SocketException){
+                System.out.println("There was some problem on the server side");
+            }
         }
     }
 

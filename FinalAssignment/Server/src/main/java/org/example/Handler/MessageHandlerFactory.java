@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.example.Dto.LoginRequestDto;
 import org.example.Dto.RequestData;
 import org.example.Exception.NotFoundException;
+import org.example.Exception.OperationFailedException;
 import org.example.utils.AuthenticationUtils;
 import org.springframework.dao.DataAccessException;
 
@@ -30,7 +31,7 @@ public class MessageHandlerFactory {
                 RoleHandler roleHandler = RoleHandlerFactory.createHandler(AuthenticationUtils.getRoleFromToken(sessionToken), sessionToken);
                 roleHandler.handleCommands(requestData, protocolHandler);
             }
-        }catch(NotFoundException | IllegalStateException e) {
+        }catch(NotFoundException | IllegalStateException | OperationFailedException e) {
             protocolHandler.sendError(e.getMessage(), requestData.getFormat());
         }catch (RuntimeException e){
             protocolHandler.sendError(e.getMessage(), requestData.getFormat());

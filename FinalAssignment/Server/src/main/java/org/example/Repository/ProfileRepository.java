@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
+import static org.example.Constants.DatabaseConstants.GET_USER_PROFILE;
 import static org.example.Constants.DatabaseConstants.INSERT_PROFILE;
 
 public class ProfileRepository {
@@ -36,12 +37,8 @@ public class ProfileRepository {
     }
 
     public Profile getUserProfile(String username) {
-        String sql = "SELECT p.meal_preference_id, p.spice_level_id, p.region_id, p.sweet_tooth " +
-                "FROM profile p " +
-                "WHERE p.username = ?";
-
         try {
-            return jdbcTemplate.queryForObject(sql, new Object[]{username}, new ProfileRowMapper());
+            return jdbcTemplate.queryForObject(GET_USER_PROFILE, new Object[]{username}, new ProfileRowMapper());
         } catch (EmptyResultDataAccessException ex) {
             return null;
         }

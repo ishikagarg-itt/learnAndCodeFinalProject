@@ -63,10 +63,14 @@ public class DatabaseConstants {
     public static final String COUNT_VOTING_FOR_FOOD_ITEM_BY_USER_TODAY = "SELECT COUNT(*) FROM voted_item WHERE username = ? AND food_item_id = ? AND DATE(voting_date) = CURDATE()";
     public static final String INSERT_VOTED_ITEM = "INSERT INTO voted_item (food_item_id, username) VALUES (?, ?)";
     public static final String INSERT_ITEM_AUDIT = "INSERT INTO item_audit (food_item_id, average_rating, average_sentiment) VALUES (?, ?, ?)";
-    public static final String SELECT_DISCARD_ITEMS_WITHIN_MONTH = "SELECT fi.name AS food_item_name, fi.availability_status, fit.type AS food_item_type " +
+    public static final String SELECT_DISCARD_ITEMS_WITHIN_MONTH = "SELECT fi.name AS food_item_name, fi.availability_status, fit.type AS food_item_type, fi.id AS item_id, " +
+            "mp.preference AS meal_preference, sl.spice_level AS spice_level, r.region AS region, fi.sweet_tooth " +
             "FROM discard_item di " +
             "JOIN food_item fi ON di.food_item_id = fi.id " +
             "JOIN food_item_type fit ON fi.type_id = fit.id " +
+            "LEFT JOIN meal_preference mp ON fi.preference_id = mp.id " +
+            "LEFT JOIN spice_level sl ON fi.spice_level_id = sl.id " +
+            "LEFT JOIN region r ON fi.region_id = r.id " +
             "WHERE di.discard_date >= ?";
     public static final String INSERT_DISCARD_ITEM = "INSERT INTO discard_item (food_item_id, discard_date) " +
             "SELECT fi.id, CURRENT_DATE() " +
@@ -78,4 +82,14 @@ public class DatabaseConstants {
     public static final String SELECT_REGION_BY_NAME = "SELECT id from region " + "WHERE region = ?";
     public static final String INSERT_PROFILE = "INSERT INTO profile (meal_preference_id, spice_level_id, region_id, sweet_tooth, username) " +
             "VALUES (?, ?, ?, ?, ?)";
+    public static final String GET_USER_PROFILE = "SELECT p.meal_preference_id, p.spice_level_id, p.region_id, p.sweet_tooth " +
+            "FROM profile p " +
+            "WHERE p.username = ?";
+    public static final String SORT_ROLL_OUT_MENU_FOR_PROFILE = "LEFT JOIN profile p ON p.username = ? " +
+            "WHERE rm.rollout_date = CURDATE() " +
+            "ORDER BY (fi.preference_id = p.meal_preference_id) DESC, " +
+            "(fi.spice_level_id = p.spice_level_id) DESC, " +
+            "(fi.region_id = p.region_id) DESC, " +
+            "(fi.sweet_tooth = p.sweet_tooth) DESC";
+    public static final String FILTER_MENU_FOR_CURRENT_DATE = "WHERE rm.rollout_date = CURDATE()";
 }

@@ -1,6 +1,7 @@
 package org.example.Handler;
 
 import com.google.gson.Gson;
+import org.example.Constants.ResponseCodeEnum;
 import org.example.Controller.AuthenticationController;
 import org.example.Deserializer.RequestDeserializer;
 import org.example.Dto.LoginRequestDto;
@@ -25,7 +26,7 @@ public class LoginHandler {
     public String handle(RequestData requestData, ProtocolHandler protocolHandler) {
         LoginRequestDto loginRequest = protocolHandler.deserializeRequestPayload(requestData, LoginRequestDto.class);
         LoginResponseDto loginResponse = authenticationController.login(loginRequest);
-        protocolHandler.sendResponse("SUCCESS", loginResponse, requestData.getFormat());
+        protocolHandler.sendResponse(ResponseCodeEnum.SUCCESS.toString(), loginResponse, requestData.getFormat());
         System.out.println("Server sent session token to client");
         return loginResponse.getSessionToken();
 

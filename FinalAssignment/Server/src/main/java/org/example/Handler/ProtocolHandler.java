@@ -1,6 +1,7 @@
 package org.example.Handler;
 
 import org.example.Constants.FormatEnum;
+import org.example.Constants.ResponseCodeEnum;
 import org.example.Deserializer.RequestDeserializer;
 import org.example.Deserializer.RequestDeserializerFactory;
 import org.example.Dto.RequestData;
@@ -14,12 +15,12 @@ import java.io.PrintWriter;
 import java.util.List;
 
 public class ProtocolHandler {
-    private final PrintWriter out;
-    private final BufferedReader in;
+    private final PrintWriter writeResponseToStream;
+    private final BufferedReader readRequestFromStream;
 
     public ProtocolHandler(PrintWriter out, BufferedReader in) {
-        this.out = out;
-        this.in = in;
+        this.writeResponseToStream = out;
+        this.readRequestFromStream = in;
     }
 
     public RequestData receiveRequest(String header) throws IOException, OperationFailedException {
@@ -28,7 +29,7 @@ public class ProtocolHandler {
         int payloadLength = Integer.parseInt(headerParts[1]);
         FormatEnum format = FormatEnum.fromFormatName(headerParts[2]);
         String sessionToken = headerParts.length > 3 ? headerParts[3] : null;
-        String payload = readPayload(in, payloadLength);
+        String payload = readPayload(readRequestFromStream, payloadLength);
         return new RequestData(messageType, payloadLength, payload, format.toString(), sessionToken);
     }
 
@@ -61,12 +62,12 @@ public class ProtocolHandler {
         String responsePayload = responseSerializer.serialize(responseObject);
 
         String responseHeader = status + "|" + responsePayload.length() + "|" + format;
-        out.println(responseHeader);
-        out.println(responsePayload);
-        out.flush();
+        writeResponseToStream.println(responseHeader);
+        writeResponseToStream.println(responsePayload);
+        writeResponseToStream.flush();
     }
 
     public void sendError(String errorMessage, String format) throws OperationFailedException {
-        sendResponse("ERROR", errorMessage, format);
+        sendResponse(ResponseCodeEnum.ERROR.toString(), errorMessage, format);
     }
 }

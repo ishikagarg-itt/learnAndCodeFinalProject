@@ -9,13 +9,10 @@ import org.example.Dto.NotificationDto;
 import org.example.Dto.NotificationTypeDto;
 import org.example.Dto.RegionDto;
 import org.example.Dto.SpiceLevelDto;
-import org.example.Dto.VotedItemDto;
-
-import javax.management.Notification;
 
 public class OutputHandler {
     public static void printFoodItemResponse(FoodItemResponseDto item){
-        System.out.println("Food Item ID: " + item.getId());
+        System.out.println("Food Item Id: " + item.getId());
         System.out.println("Name: " + item.getName());
         System.out.println("Availability Status: " + item.isAvailabilityStatus());
 
@@ -39,25 +36,19 @@ public class OutputHandler {
             System.out.println("Region: " + region.getRegion());
         }
 
+        System.out.println("Sweet Tooth: " + item.isSweetTooth());
         System.out.println("-----");
     }
 
     public static void printVotedItemResponse(EmployeeMenuDto item){
-        System.out.println("Id: " + item.getFoodItem().getId());
-        System.out.println("Name: " + item.getFoodItem().getName());
-
-        FoodItemTypeDto type = item.getFoodItem().getType();
-        if (type != null) {
-            System.out.println("Type Name: " + type.getType());
-        }
-
+        printFoodItemData(item);
         System.out.println("Rating: " + item.getAverageRating());
         System.out.println("Comment: " + item.getComment());
-
         System.out.println("-----");
     }
 
     public static void printDiscardItemResponse(DiscardItemDto item){
+        System.out.println("Food Item Id: " + item.getFoodItem().getId());
         System.out.println("Name: " + item.getFoodItem().getName());
 
         FoodItemTypeDto type = item.getFoodItem().getType();
@@ -65,7 +56,49 @@ public class OutputHandler {
             System.out.println("Type Name: " + type.getType());
         }
 
+        MealPreferenceDto mealPreference = item.getFoodItem().getMealPreference();
+        if (mealPreference != null) {
+            System.out.println("Meal Preference: " + mealPreference.getPreference());
+        }
+
+        SpiceLevelDto spiceLevel = item.getFoodItem().getSpiceLevel();
+        if(spiceLevel != null){
+            System.out.println("Spice Level: " + spiceLevel.getSpiceLevel());
+        }
+
+        RegionDto region = item.getFoodItem().getRegion();
+        if(region != null){
+            System.out.println("Region: " + region.getRegion());
+        }
+
+        System.out.println("Sweet Tooth: " + item.getFoodItem().isSweetTooth());
         System.out.println("-----");
+    }
+
+    private static void printFoodItemData(EmployeeMenuDto item) {
+        System.out.println("Id: " + item.getFoodItem().getId());
+        System.out.println("Name: " + item.getFoodItem().getName());
+        FoodItemTypeDto type = item.getFoodItem().getType();
+        if (type != null) {
+            System.out.println("Type Name: " + type.getType());
+        }
+
+        MealPreferenceDto mealPreference = item.getFoodItem().getMealPreference();
+        if (mealPreference != null) {
+            System.out.println("Meal Preference: " + mealPreference.getPreference());
+        }
+
+        SpiceLevelDto spiceLevel = item.getFoodItem().getSpiceLevel();
+        if(spiceLevel != null){
+            System.out.println("Spice Level: " + spiceLevel.getSpiceLevel());
+        }
+
+        RegionDto region = item.getFoodItem().getRegion();
+        if(region != null){
+            System.out.println("Region: " + region.getRegion());
+        }
+
+        System.out.println("Sweet Tooth: " + item.getFoodItem().isSweetTooth());
     }
 
     public static void printNotificationResponse(NotificationDto notification) {
@@ -75,7 +108,6 @@ public class OutputHandler {
         if (type != null) {
             System.out.println("Type Name: " + type.getType());
         }
-
         System.out.println("-----");
     }
 }

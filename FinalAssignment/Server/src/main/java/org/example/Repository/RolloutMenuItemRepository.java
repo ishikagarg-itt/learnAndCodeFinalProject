@@ -12,6 +12,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.util.List;
 
+import static org.example.Constants.DatabaseConstants.FILTER_MENU_FOR_CURRENT_DATE;
+import static org.example.Constants.DatabaseConstants.SORT_ROLL_OUT_MENU_FOR_PROFILE;
+
 public class RolloutMenuItemRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -46,15 +49,10 @@ public class RolloutMenuItemRepository {
         String query = DatabaseConstants.SELECT_MENU_FOR_EMPLOYEE;
 
         if (profile != null) {
-            query += "LEFT JOIN profile p ON p.username = ? " +
-                    "WHERE rm.rollout_date = CURDATE() " +
-                    "ORDER BY (fi.preference_id = p.meal_preference_id) DESC, " +
-                    "(fi.spice_level_id = p.spice_level_id) DESC, " +
-                    "(fi.region_id = p.region_id) DESC, " +
-                    "(fi.sweet_tooth = p.sweet_tooth) DESC";
+            query += SORT_ROLL_OUT_MENU_FOR_PROFILE;
             return jdbcTemplate.query(query, new Object[]{username}, new EmployeeMenuMapper());
         } else {
-            query += "WHERE rm.rollout_date = CURDATE()";
+            query += FILTER_MENU_FOR_CURRENT_DATE;
             return jdbcTemplate.query(query, new EmployeeMenuMapper());
         }
     }

@@ -1,5 +1,6 @@
 package org.example.Handler;
 
+import org.example.Constants.ResponseCodeEnum;
 import org.example.Controller.DiscardItemController;
 import org.example.Controller.EmployeeController;
 import org.example.Deserializer.RequestDeserializer;
@@ -75,34 +76,34 @@ public class EmployeeHandler implements RoleHandler {
                 .collect(Collectors.toList());
         System.out.println("chosen Food item ids with remove duplicacy: " + chosenFoodItemIds);
         String chooseItemResponse = employeeController.chooseItems(chosenFoodItemIds, username);
-        protocolHandler.sendResponse("SUCCESS", chooseItemResponse, requestData.getFormat());
+        protocolHandler.sendResponse(ResponseCodeEnum.SUCCESS.toString(), chooseItemResponse, requestData.getFormat());
     }
 
     private void handleRating(RequestData requestData, ProtocolHandler protocolHandler, String username){
         RatingDto rating = protocolHandler.deserializeRequestPayload(requestData, RatingDto.class);
         String ratingResponse = employeeController.provideRating(rating, username);
-        protocolHandler.sendResponse("SUCCESS", ratingResponse, requestData.getFormat());
+        protocolHandler.sendResponse(ResponseCodeEnum.SUCCESS.toString(), ratingResponse, requestData.getFormat());
     }
 
     private void handleViewNotifications(RequestData requestData, ProtocolHandler protocolHandler){
         List<Notification> notifications = employeeController.viewNotifications();
-        protocolHandler.sendResponse("SUCCESS", notifications, requestData.getFormat());
+        protocolHandler.sendResponse(ResponseCodeEnum.SUCCESS.toString(), notifications, requestData.getFormat());
     }
 
     private void handleDiscardItemRating(RequestData requestData, ProtocolHandler protocolHandler, String username){
         RatingDto rating = protocolHandler.deserializeRequestPayload(requestData, RatingDto.class);
         String ratingResponse = employeeController.provideDiscardItemRating(rating, username);
-        protocolHandler.sendResponse("SUCCESS", ratingResponse, requestData.getFormat());
+        protocolHandler.sendResponse(ResponseCodeEnum.SUCCESS.toString(), ratingResponse, requestData.getFormat());
     }
 
     private void handleViewDiscardItems(RequestData requestData, ProtocolHandler protocolHandler) {
         List<DiscardItem> discardItems = discardItemController.getDiscardItems();
-        protocolHandler.sendResponse("SUCCESS", discardItems, requestData.getFormat());
+        protocolHandler.sendResponse(ResponseCodeEnum.SUCCESS.toString(), discardItems, requestData.getFormat());
     }
 
     private void handleUpdateProfile(RequestData requestData, ProtocolHandler protocolHandler, String username) {
         ProfileDto profile = protocolHandler.deserializeRequestPayload(requestData, ProfileDto.class);
         String updateProfileResponse = employeeController.updateProfile(profile, username);
-        protocolHandler.sendResponse("SUCCESS", updateProfileResponse, requestData.getFormat());
+        protocolHandler.sendResponse(ResponseCodeEnum.SUCCESS.toString(), updateProfileResponse, requestData.getFormat());
     }
 }

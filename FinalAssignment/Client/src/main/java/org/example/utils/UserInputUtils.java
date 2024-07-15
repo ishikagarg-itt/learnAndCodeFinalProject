@@ -61,13 +61,13 @@ public class UserInputUtils {
         String type = scanner.nextLine();
         System.out.print("Enter Availability(true/false): ");
         Boolean availabilityStatus = Boolean.parseBoolean(scanner.nextLine());
-        System.out.print("Enter your meal preference(Vegetarian/Non Vegetarian/Eggetarian): ");
+        System.out.print("Enter meal preference(Vegetarian/Non Vegetarian/Eggetarian): ");
         String mealPreference = scanner.nextLine();
-        System.out.print("Enter your spice level(High/Medium/Low): ");
+        System.out.print("Enter spice level(High/Medium/Low): ");
         String spiceLevel = scanner.nextLine();
-        System.out.println("What region food do you prefer?(North Indian/South Indian/Other)");
+        System.out.println("Enter region(North Indian/South Indian/Other)");
         String region = scanner.nextLine();
-        System.out.println("Do you have a sweet tooth?(true/false)");
+        System.out.println("Enter sweet tooth(true/false)");
         Boolean sweetTooth = Boolean.parseBoolean(scanner.nextLine());
 
         FoodItemDto foodItem = new FoodItemDto();
